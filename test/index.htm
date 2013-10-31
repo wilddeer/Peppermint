@@ -1,0 +1,143 @@
+<html class="no-js">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="msapplication-tap-highlight" content="no">
+
+	<link rel="stylesheet" href="../peppermint.css">
+
+	<style>
+		figure img {
+			max-width: 94%;
+			max-height: 400px;
+			-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+		}
+
+		figure figcaption {
+			font-style: italic;
+			color: #787575;
+			font-size: 0.8em;
+			margin-top: 0.5em;
+		}
+
+		.peppermint {
+			text-align: center;
+		}
+
+		.peppermint.active nav {
+			margin-top: 1em;
+			padding: 0.1em 0;
+		}
+
+		/* bullets */
+		.peppermint.active > nav > button {
+			display: inline-block;
+			cursor: pointer;
+			margin-right: 0.5em;
+			margin-left: 0.5em;
+			padding: 0;
+			width: 0.8em;
+			height: 0.8em;
+			border-radius: 0.8em;
+			border: 1px solid #9b9890;
+		}
+
+		.peppermint.active > nav > button.active {
+			background: #9b9890;
+		}
+
+		/* binus styles */
+
+	</style>
+
+	<title>Test</title>
+</head>
+
+<body>
+	<div class="peppermint" data-force="true">
+		<figure>
+			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+			<figcaption>it's a cat!</figcaption>
+		</figure>
+	</div>
+
+	<section class="api-test">
+		<h2>API test</h2>
+
+		<p>
+			<button class="js-left">< prev</button>
+			<button class="js-right">next ></button>
+		</p>
+
+		<p>
+			<label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
+		</p>
+
+		<p>
+			<button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
+		</p>
+
+		<p>
+			N: <span class="js-n">?</span>;
+			Pos: <span class="js-pos">?</span>;
+			Length: <span class="js-length">?</span>;
+		</p>
+	</section>
+
+	<script src="js/jquery-1.10.2.min.js"></script>
+	<script src="../peppermint.js"></script>
+
+	<script>
+		$('.peppermint').Peppermint({
+			bullets: true,
+			autoplaySpeed: 4000,
+			onSlideChange: function(n) {
+				$('.js-n').text(n);
+				$('.js-pos').text($('.peppermint').data('Peppermint').getCurrentPos());
+				$('.js-length').text($('.peppermint').data('Peppermint').getLength());
+			}
+		});
+
+		$('.js-left').on('click', function() {
+			$('.peppermint').data('Peppermint').prev();
+		});
+
+		$('.js-right').on('click', function() {
+			$('.peppermint').data('Peppermint').next();
+		});
+
+		$('.js-start').on('click', function() {
+			$('.peppermint').data('Peppermint').start();
+		});
+
+		$('.js-stop').on('click', function() {
+			$('.peppermint').data('Peppermint').stop();
+		});
+
+		$('.js-go').on('click', function() {
+			$('.peppermint').data('Peppermint').slideTo($('.js-goto').val());
+		});
+
+		$('.js-goto').on('keyup', function(event) {
+			if (event.keyCode == 13){
+				$('.peppermint').data('Peppermint').slideTo($('.js-goto').val());
+			}
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+.peppermint.active {
+	position: relative;
+	overflow: hidden;
+}
+
+.peppermint.active .captions {
+	font-size: 0.9rem;
+	margin-bottom: 0.5rem;
+	text-align: center;
+	display: none;
+}
+
+.peppermint.active .slides {
+	z-index: 0;
+	position: relative;
+	overflow: hidden;
+	-ms-touch-action: pan-y;
+}
+
+.peppermint.active .slides > * {
+	float: left;
+	margin: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.peppermint.active .captions,
+.peppermint.active .slides,
+.peppermint.active .slides * {
+	-webkit-transform: translate3d(0,0,0);
+	-ms-transform: translate3d(0,0,0);
+	-moz-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0);
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
