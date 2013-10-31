@@ -1,8 +1,16 @@
- function Peppermint(element, options) {
+/*
+	Peppermint touch slider
+	Copyright dizaina.net
+
+	MIT License
+*/
+
+function Peppermint(element, options) {
 	var o = options || {};
 
 	o.speed = o.speed || 300;
-	o.autoplaySpeed = o.autoplaySpeed || false;
+	o.slideshowInterval = o.slideshowInterval || 4000;
+	o.slideshow = o.slideshow || false;
 	o.bullets = o.bullets || false;
 	
 	var _this = element,
@@ -116,8 +124,12 @@
 			slideshowTimeoutId = setTimeout(function() {
 				nextSlide();
 			},
-			o.autoplaySpeed);
+			o.slideshowInterval);
 		}
+	}
+
+	function pauseSlideshow() {
+		slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
 	}
 
 	function stopSlideshow() {
@@ -184,6 +196,7 @@
 			if (isScrolling) return;
 
 			event.preventDefault();
+			pauseSlideshow();
 
 			diff.x = 
 			diff.x / 
@@ -264,7 +277,7 @@
 		slideBlock = document.createElement('div');
 		slideBlock.className = 'slides';
 
-		for (var i = 0; i <= slider.self.children.length - 1; i++) {
+		for (var i = 0, l = slider.self.children.length; i < l; i++) {
 			var slide = slider.self.children[i],
 				bullet = document.createElement('button'),
 				links = slide.getElementsByTagName('a'),
@@ -303,7 +316,7 @@
 
 		slideBlock.style.width = slider.slides.length*100+'%';
 
-		for (var i in slider.slides) {
+		for (var i = 0, l = slider.slides.length; i < l; i++) {
 			slideBlock.appendChild(slider.slides[i]);
 			slider.slides[i].style.width = slideWidth+'%';
 		}
@@ -314,7 +327,7 @@
 		if (o.bullets) {
 			bulletBlock = document.createElement('nav');
 
-			for (var i in slider.slides) {
+			for (var i = 0, l = slider.bullets.length; i < l; i++) {
 				bulletBlock.appendChild(slider.bullets[i]);
 			}
 
@@ -326,7 +339,7 @@
 		addEvent(window, 'resize', onWidthChange, false);
 		addEvent(window, 'orientationchange', onWidthChange, false);
 
-		if (o.autoplaySpeed) startSlideshow();
+		if (o.slideshowInterval) startSlideshow();
 
 		//callback
 		o.onSetup && o.onSetup(slider.slides.length);

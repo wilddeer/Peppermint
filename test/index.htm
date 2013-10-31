@@ -4,54 +4,18 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="msapplication-tap-highlight" content="no">
 
-	<link rel="stylesheet" href="../peppermint.css">
+	<link rel="stylesheet" href="../peppermint.required.css">
+	<link rel="stylesheet" href="../peppermint.suggested.css">
 
 	<style>
-		figure img {
-			max-width: 94%;
-			max-height: 400px;
-			-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-			box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+		a img {
+			border: 0;
 		}
-
-		figure figcaption {
-			font-style: italic;
-			color: #787575;
-			font-size: 0.8em;
-			margin-top: 0.5em;
-		}
-
-		.peppermint {
-			text-align: center;
-		}
-
-		.peppermint.active nav {
-			margin-top: 1em;
-			padding: 0.1em 0;
-		}
-
-		/* bullets */
-		.peppermint.active > nav > button {
-			display: inline-block;
-			cursor: pointer;
-			margin-right: 0.5em;
-			margin-left: 0.5em;
-			padding: 0;
-			width: 0.8em;
-			height: 0.8em;
-			border-radius: 0.8em;
-			border: 1px solid #9b9890;
-		}
-
-		.peppermint.active > nav > button.active {
-			background: #9b9890;
-		}
-
-		/* binus styles */
-
 	</style>
 
 	<title>Test</title>
+
+	<script src="js/html5shiv.js"></script>
 </head>
 
 <body>
@@ -104,7 +68,7 @@
 	<script>
 		$('.peppermint').Peppermint({
 			bullets: true,
-			autoplaySpeed: 4000,
+			slideshow: true,
 			onSlideChange: function(n) {
 				$('.js-n').text(n);
 				$('.js-pos').text($('.peppermint').data('Peppermint').getCurrentPos());
