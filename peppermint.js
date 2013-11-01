@@ -9,6 +9,7 @@ function Peppermint(element, options) {
 	var o = options || {};
 
 	o.speed = o.speed || 300;
+	o.flickSpeed = o.flickSpeed || 300;
 	o.slideshowInterval = o.slideshowInterval || 4000;
 	o.slideshow = o.slideshow || false;
 	o.bullets = o.bullets || false;
@@ -41,7 +42,7 @@ function Peppermint(element, options) {
 		})()
 	}
 
-	function changeActiveSlide(n) {
+	function changeActiveSlide(n, flick) {
 		if (!slider.slides[n]) n = activeSlide;
 
 		if (n !== activeSlide) {
@@ -52,7 +53,7 @@ function Peppermint(element, options) {
 			slider.bullets[n].className += ' active';
 		}
 
-		changePos(-n*slider.width, o.speed);
+		changePos(-n*slider.width, (flick?o.flickSpeed:o.speed));
 
 		activeSlide = n;
 
@@ -217,15 +218,16 @@ function Peppermint(element, options) {
 				(p && !event.isPrimary)) return;
 
 			var duration = Number(+new Date - start.time);
+			var flick = duration < flickTime && Math.abs(diff.x) > 20;
 
-			if ((duration < flickTime && Math.abs(diff.x) > 20)
+			if (flick
 				|| (Math.abs(diff.x) > slider.width/4)) {
 
 				if (diff.x < 0) {
-					changeActiveSlide(activeSlide+1);		
+					changeActiveSlide(activeSlide+1, flick);
 				}
 				else {
-					changeActiveSlide(activeSlide-1);		
+					changeActiveSlide(activeSlide-1, flick);	
 				}
 
 			}
@@ -279,15 +281,33 @@ function Peppermint(element, options) {
 
 		for (var i = 0, l = slider.self.children.length; i < l; i++) {
 			var slide = slider.self.children[i],
-				bullet = document.createElement('button'),
+				bullet = document.createElement('span'),
 				links = slide.getElementsByTagName('a'),
 				n = slider.slides.length;
 
 			slider.slides.push(slide);
 
+			bullet.setAttribute('tabindex', '0');
+
+			bullet.setAttribute('role', 'button');
+
+			bullet.innerHTML = '<span></span>';
+
 			if (i == activeSlide) bullet.className += ' active';
-			addEvent(bullet, 'click', function(x) {
-				return function() {changeActiveSlide(x);}
+
+			addEvent(bullet, 'click', function(x, b) {
+				return function() {
+					b.blur();
+					changeActiveSlide(x);
+				};
+			}(n, bullet), false);
+
+			addEvent(bullet, 'keyup', function(x) {
+				return function(event) {
+					if (event.keyCode == 13 || event.keyCode == 32) {
+						changeActiveSlide(x);
+					}
+				};
 			}(n), false);
 
 			/*

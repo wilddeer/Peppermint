@@ -2,7 +2,12 @@
 	text-align: center;
 }
 
+.peppermint figure {
+	margin: 0 0 1.5em 0;
+}
+
 .peppermint figure img {
+	vertical-align: top;
 	max-width: 94%;
 	max-height: 400px;
 	-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -16,24 +21,35 @@
 	margin-top: 0.5em;
 }
 
+.peppermint.active {
+	margin-bottom: 1.5em;
+}
+
 .peppermint.active nav {
-	margin-top: 1em;
-	padding: 0.1em 0;
+	margin-top: 0.6em;
 }
 
 /* bullets */
-.peppermint.active > nav > button {
+.peppermint.active > nav > span {
 	display: inline-block;
+	padding: 0.5em;
 	cursor: pointer;
-	margin-right: 0.5em;
-	margin-left: 0.5em;
-	padding: 0;
-	width: 0.8em;
-	height: 0.8em;
-	border-radius: 0.8em;
-	border: 1px solid #9b9890;
 }
 
-.peppermint.active > nav > button.active {
+.peppermint.active > nav > span > span {
+	display: inline-block;
+	padding: 0;
+	width: 0.7em;
+	height: 0.7em;
+	border-radius: 0.7em;
+	border: 1px solid #9b9890;
+	background: transparent;
+}
+
+.peppermint.active > nav > span.active > span {
 	background: #9b9890;
+}
+
+.peppermint.active > nav > span:active {
+	outline: none;
 }
