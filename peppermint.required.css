@@ -26,6 +26,11 @@
 	-webkit-tap-highlight-color: transparent;
 }
 
+.peppermint.active .slides a:active,
+.peppermint.active .slides a:active img {
+	outline: none;
+}
+
 .peppermint.active .captions,
 .peppermint.active .slides,
 .peppermint.active .slides * {
