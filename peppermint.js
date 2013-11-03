@@ -43,9 +43,10 @@ function Peppermint(element, options) {
 	}
 
 	function changeActiveSlide(n, flick) {
-		if (!slider.slides[n]) n = activeSlide;
-
-		if (n !== activeSlide) {
+		if (!slider.slides[n]) {
+			n = activeSlide;
+		}
+		else if (n !== activeSlide) {
 			for (var i in slider.bullets) {
 				slider.bullets[i].className = slider.bullets[i].className.replace(' active', '');
 			}
@@ -214,6 +215,8 @@ function Peppermint(element, options) {
 		}
 
 		function tEnd(event) {
+			event.target && event.target.blur();
+			
 			if (isScrolling ||
 				(p && !event.isPrimary)) return;
 
@@ -359,7 +362,7 @@ function Peppermint(element, options) {
 		addEvent(window, 'resize', onWidthChange, false);
 		addEvent(window, 'orientationchange', onWidthChange, false);
 
-		if (o.slideshowInterval) startSlideshow();
+		if (o.slideshow) startSlideshow();
 
 		//callback
 		o.onSetup && o.onSetup(slider.slides.length);

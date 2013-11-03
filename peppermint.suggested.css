@@ -25,23 +25,36 @@
 	margin-bottom: 1.5em;
 }
 
+.peppermint.active .slides {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.peppermint.active .slides a:active img {
+	outline: none;
+}
+
+/* bullets */
 .peppermint.active nav {
 	margin-top: 0.6em;
 }
 
-/* bullets */
 .peppermint.active > nav > span {
 	display: inline-block;
 	padding: 0.5em;
 	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .peppermint.active > nav > span > span {
 	display: inline-block;
 	padding: 0;
-	width: 0.7em;
-	height: 0.7em;
-	border-radius: 0.7em;
+	width: 10px;
+	height: 10px;
+	border-radius: 10px;
 	border: 1px solid #9b9890;
 	background: transparent;
 }
