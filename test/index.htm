@@ -46,6 +46,42 @@
 
 			<figcaption>it's a cat!</figcaption>
 		</figure>
+
+		<figure>
+			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+			<figcaption>it's a cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+			<figcaption>it's a cat!</figcaption>
+		</figure>
 	</div>
 
 	<h2>API test</h2>
@@ -128,7 +164,7 @@
 
 			var block = document.getElementById('peppermint');
 			var slider = Peppermint(block, {
-				bullets: true,
+				dots: true,
 				slideshow: true,
 				speed: 500,
 				slideshowInterval: 5000
@@ -138,12 +174,12 @@
 			addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
 			$('.jquery-test').Peppermint({
-				bullets: true,
+				dots: true,
 				slideshow: true,
 				onSlideChange: function(n) {
 					$('.js-n').text(n);
 					$('.js-pos').text($('.jquery-test').data('Peppermint').getCurrentPos());
-					$('.js-length').text($('.jquery-test').data('Peppermint').getLength());
+					$('.js-length').text($('.jquery-test').data('Peppermint').getSlidesNumber());
 				}
 			});
 

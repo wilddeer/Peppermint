@@ -30,35 +30,49 @@
 	padding-bottom: 0.5em;
 }
 
-/* bullets */
-.peppermint.active nav {
-	margin-top: 0.6em;
+/* dots */
+.peppermint.active ul.dots {
+	margin: 0.6em 0 0 0;
+	padding: 0;
+	list-style-type: none;
 }
 
-.peppermint.active > nav > span {
+.peppermint.active > ul.dots > li {
 	display: inline-block;
+	position: relative;
 	padding: 0.5em;
+	margin: 0 0.1em;
+	width: 12px;
+	height: 12px;
 	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
 
-.peppermint.active > nav > span > span {
+.peppermint.active > ul.dots > li > span {
 	display: inline-block;
-	padding: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -4px 0 0 -4px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #9b9890;
+}
+
+.peppermint.active > ul.dots > li.active > span {
+	margin: -6px 0 0 -6px;
 	width: 10px;
 	height: 10px;
-	border-radius: 10px;
 	border: 1px solid #9b9890;
 	background: transparent;
 }
 
-.peppermint.active > nav > span.active > span {
-	background: #9b9890;
-}
-
-.peppermint.active > nav > span:active {
+.peppermint.active > ul.dots > li:active {
 	outline: none;
 }

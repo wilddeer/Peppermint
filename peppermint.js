@@ -5,32 +5,31 @@
 	MIT License
 */
 
-function Peppermint(element, options) {
+function Peppermint(_this, options) {
 	var o = options || {};
 
-	o.speed = o.speed || 300;
-	o.flickSpeed = o.flickSpeed || 300;
+	o.speed = o.speed || 300; // transition between slides in ms
+	o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
 	o.slideshowInterval = o.slideshowInterval || 4000;
-	o.slideshow = o.slideshow || false;
-	o.bullets = o.bullets || false;
+	o.startSlide = o.startSlide || 0;
 	
-	var _this = element,
-		slider = {
+	var slider = {
 			slides: [],
-			bullets: [],
-			self: _this
+			dots: []
 		},
-		flickTime = 250,
-		activeSlide = 0,
+		slidesNumber,
+		flickThreshold = 250, // Maximum time in ms for flicks
+		activeSlide,
 		slideWidth,
-		bulletBlock,
+		dotBlock,
 		slideBlock,
 		slideshowTimeoutId,
 		slideshowActive;
 
+	// feature detects
 	var support = {
 		msPointerEvents: !!window.navigator.msPointerEnabled,
-		transitions: (function() {
+		transform: (function() {
 			var props = ['transform', 'WebkitTransform', 'MozTransform', 'OTransform', 'msTransform'],
 				block = document.createElement('div');
 
@@ -42,30 +41,35 @@ function Peppermint(element, options) {
 		})()
 	}
 
-	function changeActiveSlide(n, flick) {
+	//n - slide number (starting from 0)
+	//speed - transition in ms, can be omitted
+	function changeActiveSlide(n, speed) {
 		if (!slider.slides[n]) {
 			n = activeSlide;
 		}
 		else if (n !== activeSlide) {
-			for (var i in slider.bullets) {
-				slider.bullets[i].className = slider.bullets[i].className.replace(' active', '');
+			//change active dot
+			for (var i in slider.dots) {
+				slider.dots[i].className = slider.dots[i].className.replace(' active', '');
 			}
 
-			slider.bullets[n].className += ' active';
+			slider.dots[n].className += ' active';
+
+			activeSlide = n;
 		}
 
-		changePos(-n*slider.width, (flick?o.flickSpeed:o.speed));
+		changePos(-n*slider.width, (speed===undefined?o.speed:speed));
 
-		activeSlide = n;
-
+		//reset slideshow timeout whenever active slide is changed for whatever reason
 		stepSlideshow();
 
-		//callback
+		//API callback
 		o.onSlideChange && o.onSlideChange(n);
 
 		return n;
 	}
 
+	//changes position (in px) of the slider
 	function changePos(pos, speed) {
 		var time = speed?speed+'ms':'';
 
@@ -81,7 +85,8 @@ function Peppermint(element, options) {
 		slideBlock.style.OTransform = 
 		slideBlock.style.transform = 'translateX('+pos+'px)';
 	}
-	
+
+	//fallback function with `left` used instead of `transform`
 	function changePosFallback(pos, speed) {
 		var time = speed?speed+'ms':'';
 
@@ -97,7 +102,7 @@ function Peppermint(element, options) {
 	function nextSlide() {
 		var n = activeSlide + 1;
 
-		if (n > slider.slides.length - 1) {
+		if (n > slidesNumber - 1) {
 			n = 0;
 		}
 
@@ -108,7 +113,7 @@ function Peppermint(element, options) {
 		var n = activeSlide - 1;
 
 		if (n < 0) {
-			n = slider.slides.length - 1;
+			n = slidesNumber - 1;
 		}
 
 		return changeActiveSlide(n);
@@ -119,6 +124,7 @@ function Peppermint(element, options) {
 		stepSlideshow();
 	}
 
+	//sets or resets timeout to the next slide
 	function stepSlideshow() {
 		if (slideshowActive) {
 			slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
@@ -130,6 +136,7 @@ function Peppermint(element, options) {
 		}
 	}
 
+	//pauses slideshow until `stepSlideshow` is invoked
 	function pauseSlideshow() {
 		slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
 	}
@@ -139,6 +146,7 @@ function Peppermint(element, options) {
 		slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
 	}
 
+	//inits touch events
 	function touchInit() {
 		var start = {},
 			diff = {},
@@ -146,6 +154,7 @@ function Peppermint(element, options) {
 			touchInProgress = false;
 
 		if (support.msPointerEvents) {
+			//MSPointer events
 			var p = true,
 				tEvents = {
 					start: 'MSPointerDown',
@@ -155,6 +164,7 @@ function Peppermint(element, options) {
 				};
 		}
 		else {
+			//touch events
 			var p = false,
 				tEvents = {
 					start: 'touchstart',
@@ -165,9 +175,12 @@ function Peppermint(element, options) {
 		}
 
 		function tStart(event) {
+			//In MSPointer event model, multitouch invokes separate events for each finger. First touch is primary.
+			//If it's not primary or if it's not touch at all -- we shouldn't bother.
 			if (p
 				&& (!event.isPrimary || event.pointerType !== event.MSPOINTER_TYPE_TOUCH)) return;
 
+			//remember starting time and position
 			start = {
 				x: (p?event.clientX:event.touches[0].clientX),
 				y: (p?event.clientY:event.touches[0].clientY),
@@ -175,6 +188,7 @@ function Peppermint(element, options) {
 				time: +new Date
 			};
 			
+			//reset `isScrolling` and `diff`
 			isScrolling = undefined;
 
 			diff = {};
@@ -183,61 +197,76 @@ function Peppermint(element, options) {
 		}
 
 		function tMove(event) {
-			if (((event.touches && event.touches.length > 1) || (event.scale && event.scale !== 1)) ||
+			//if the user is trying to scroll vertically,
+			//if it's multitouch or pinch move,
+			//if it's an MSPointerEvent and the event is not primary or touch is not in progress -- do nothing.
+			if (isScrolling ||
+				((event.touches && event.touches.length > 1) || (event.scale && event.scale !== 1)) ||
 				(p && (!event.isPrimary || !touchInProgress))) return;
 
-			diff = {
-				x: (p? event.clientX : event.touches[0].clientX) - start.x,
-				y: (p? event.clientY : event.touches[0].clientY) - start.y
-			}
+			diff.x = (p? event.clientX : event.touches[0].clientX) - start.x;
 
+			//check whether the user is trying to scroll vertically
 			if (isScrolling === undefined) {
-				isScrolling = (Math.abs(diff.x) < Math.abs(diff.y));
+				//`diff.y` is only required for this check
+				diff.y = (p? event.clientY : event.touches[0].clientY) - start.y;
+				//assign and check `isScrolling` at the same time
+				if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y))) return;
 			}
 
-			if (isScrolling) return;
+			event.preventDefault(); //Prevent scrolling
+			pauseSlideshow(); //pause slideshow when touch is in progress
 
-			event.preventDefault();
-			pauseSlideshow();
-
+			//if it's first slide and moving left or last slide and moving right -- resist!
 			diff.x = 
 			diff.x / 
 				(
 					(!activeSlide && diff.x > 0
-					|| activeSlide == slider.slides.length - 1 && diff.x < 0)
+					|| activeSlide == slidesNumber - 1 && diff.x < 0)
 					?                      
 					(Math.abs(diff.x)/slider.width*2 + 1)
 					:
 					1
 				);
 			
+			//change the position of the slider appropriately
 			changePos(diff.x - slider.width*activeSlide);
 		}
 
 		function tEnd(event) {
+			//IE likes to focus the link after touchend.
+			//I dont' want to disable the outline completely for accessibility reasons,
+			//so I just defocus it after touch and disable the outline for `:active` link in css.
+			//This way the outline will remain visible when tabbing through the links.
 			event.target && event.target.blur();
 			
 			if (isScrolling ||
 				(p && !event.isPrimary)) return;
 
+			//duration of the touch move
 			var duration = Number(+new Date - start.time);
-			var flick = duration < flickTime && Math.abs(diff.x) > 20;
+			//whether it was a flick move or not
+			var flick = duration < flickThreshold && Math.abs(diff.x) > 20;
 
+			//if it was a flick or the move was long enough -- switch the slide
 			if (flick
 				|| (Math.abs(diff.x) > slider.width/4)) {
 
 				if (diff.x < 0) {
-					changeActiveSlide(activeSlide+1, flick);
+					changeActiveSlide(activeSlide+1, o.touchSpeed);
 				}
 				else {
-					changeActiveSlide(activeSlide-1, flick);	
+					changeActiveSlide(activeSlide-1, o.touchSpeed);	
 				}
 
 			}
+			//else return to the current slide
 			else {
 				changeActiveSlide(activeSlide);
 			}
 
+			//IE likes to open a link under your finger after touchmove.
+			//This fixes IE's dumb behaviour.
 			if (p) {
 				if (diff.x === undefined) {
 					touchInProgress = false;
@@ -250,11 +279,13 @@ function Peppermint(element, options) {
 			}
 		}
 
+		//bind the events
 		addEvent(slideBlock, tEvents.start, tStart, false);
 		addEvent(slideBlock, tEvents.move, tMove, false);
 		addEvent(slideBlock, tEvents.end, tEnd, false);
 		addEvent(slideBlock, tEvents.cancel, tEnd, false);
 
+		//No clicking during touch for IE
 		if (p) {
 			addEvent(slideBlock, 'click', function(event) {
 				touchInProgress && event.preventDefault();
@@ -262,8 +293,9 @@ function Peppermint(element, options) {
 		}
 	}
 	
+	//this should be invoked when the width of the slider is changed
 	function onWidthChange() {
-		slider.width = slider.self.offsetWidth;
+		slider.width = _this.offsetWidth;
 		changePos(-activeSlide*slider.width);
 	}
 
@@ -277,101 +309,114 @@ function Peppermint(element, options) {
 	}
 
 	function setup() {
-		if (!support.transitions) changePos = changePosFallback;
+		//If the UA doesn't support css transforms -- use fallback function.
+		//It's a separate function for perfomance reasons.
+		if (!support.transform) changePos = changePosFallback;
 
 		slideBlock = document.createElement('div');
 		slideBlock.className = 'slides';
 
-		for (var i = 0, l = slider.self.children.length; i < l; i++) {
-			var slide = slider.self.children[i],
-				bullet = document.createElement('span'),
-				links = slide.getElementsByTagName('a'),
-				n = slider.slides.length;
+		//get slides & generate dots
+		for (var i = 0, l = _this.children.length; i < l; i++) {
+			var slide = _this.children[i],
+				dot = document.createElement('li'),
+				links = slide.getElementsByTagName('a');
 
 			slider.slides.push(slide);
 
-			bullet.setAttribute('tabindex', '0');
+			//`tabindex` makes dots tabbable
+			dot.setAttribute('tabindex', '0');
+			dot.setAttribute('role', 'button');
 
-			bullet.setAttribute('role', 'button');
+			dot.innerHTML = '<span></span>';
 
-			bullet.innerHTML = '<span></span>';
-
-			if (i == activeSlide) bullet.className += ' active';
-
-			addEvent(bullet, 'click', function(x, b) {
+			//bind events to dots
+			addEvent(dot, 'click', (function(x, b) {
 				return function() {
+					//Don't want to disable outlines completely for accessibility reasons,
+					//so I just defocus the dot on click & set `outline: none` for `:active` in css.
 					b.blur();
 					changeActiveSlide(x);
 				};
-			}(n, bullet), false);
+			})(i, dot), false);
 
-			addEvent(bullet, 'keyup', function(x) {
+			//Bind the same function to Enter key, except for the `blur` part -- I dont't want
+			//the focus to be lost when the user is using his keyboard to navigate.
+			addEvent(dot, 'keyup', (function(x) {
 				return function(event) {
-					if (event.keyCode == 13 || event.keyCode == 32) {
+					if (event.keyCode == 13) {
 						changeActiveSlide(x);
 					}
 				};
-			}(n), false);
+			})(i), false);
 
-			/*
-			Solves tabbing problems:
-			Cycles through links found in the slide and switches to current slide
-			when link is focused. Also resets scrollLeft of the slider block.
-
-			SetTimeout solves chrome's bug.
-			*/
+			//This solves tabbing problems:
+			//Cycles through the links found in the slide and switches to that slide
+			//when the link is focused. Also resets `scrollLeft` of the slider block.
+			//`SetTimeout` solves Chrome's bug.
 			for (var j = links.length - 1; j >= 0; j--) {
 				addEvent(links[j], 'focus', function(x) {
 					return function() {
-						slider.self.scrollLeft = 0;
+						_this.scrollLeft = 0;
 						setTimeout(function() {
-							slider.self.scrollLeft = 0;
+							_this.scrollLeft = 0;
 						}, 0);
 						changeActiveSlide(x);
 					}
-				}(n), false);
+				}(i), false);
 			};
 
-			slider.bullets.push(bullet);
+			slider.dots.push(dot);
 		}
 
-		slideWidth = 100/slider.slides.length;
+		slidesNumber = slider.slides.length;
 
-		slideBlock.style.width = slider.slides.length*100+'%';
+		slideWidth = 100/slidesNumber;
 
-		for (var i = 0, l = slider.slides.length; i < l; i++) {
-			slideBlock.appendChild(slider.slides[i]);
+		slideBlock.style.width = slidesNumber*100+'%';
+
+		for (var i = 0; i < slidesNumber; i++) {
 			slider.slides[i].style.width = slideWidth+'%';
+			slideBlock.appendChild(slider.slides[i]);
 		}
 
-		slider.self.className += ' active';
-		slider.self.appendChild(slideBlock);
+		_this.className += ' active';
+		_this.appendChild(slideBlock);
 
-		if (o.bullets) {
-			bulletBlock = document.createElement('nav');
+		if (o.dots) {
+			dotBlock = document.createElement('ul');
+			dotBlock.className = 'dots';
 
-			for (var i = 0, l = slider.bullets.length; i < l; i++) {
-				bulletBlock.appendChild(slider.bullets[i]);
+			for (var i = 0, l = slider.dots.length; i < l; i++) {
+				dotBlock.appendChild(slider.dots[i]);
 			}
 
-			slider.self.appendChild(bulletBlock);
+			_this.appendChild(dotBlock);
 		}
 
-		slider.width = slider.self.offsetWidth;
+		slider.width = _this.offsetWidth;
 
+		//watch for slider width changes
 		addEvent(window, 'resize', onWidthChange, false);
 		addEvent(window, 'orientationchange', onWidthChange, false);
 
+		//init first slide
+		changeActiveSlide(o.startSlide, 0);
+
+		//init slideshow
 		if (o.slideshow) startSlideshow();
 
-		//callback
-		o.onSetup && o.onSetup(slider.slides.length);
+		//API callback
+		o.onSetup && o.onSetup(slidesNumber);
 	}
 
-	setup();
+	//Init. Timeout to expose the API first.
+	setTimeout(function() {
+		setup();
+		touchInit();
+	}, 0);
 
-	touchInit();
-
+	//expose the API
 	return {
 		slideTo: function(slide) {
 			return changeActiveSlide(parseInt(slide, 10));
@@ -385,24 +430,39 @@ function Peppermint(element, options) {
 			return prevSlide();
 		},
 
+		//start slideshow
 		start: function() {
 			startSlideshow();
 		},
 
+		//stop slideshow
 		stop: function() {
 			stopSlideshow();
 		},
 
+		//pause slideshow until next slide change
+		pause: function() {
+			pauseSlideshow();
+		},
+
+		//get current slide number
 		getCurrentPos: function() {
 			return activeSlide;
 		},
 
-		getLength: function() {
-			return slider.slides.length;
+		//get total number of slides
+		getSlidesNumber: function() {
+			return slidesNumber;
+		},
+
+		//invoke this when the slider's width is changed
+		onWidthChange: function() {
+			onWidthChange();
 		}
 	};
 };
 
+//if jQuery is present -- create a plugin
 if (window.jQuery) {
 	(function($) {
 		$.fn.Peppermint = function(options) {
