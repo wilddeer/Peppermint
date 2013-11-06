@@ -8,8 +8,7 @@
 
 .peppermint figure img {
 	vertical-align: top;
-	max-width: 94%;
-	max-height: 400px;
+	max-width: 100%;
 	-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
