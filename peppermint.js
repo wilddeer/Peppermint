@@ -28,6 +28,7 @@ function Peppermint(_this, options) {
 
 	// feature detects
 	var support = {
+		pointerEvents: !!window.navigator.pointerEnabled,
 		msPointerEvents: !!window.navigator.msPointerEnabled,
 		transform: (function() {
 			var props = ['transform', 'WebkitTransform', 'MozTransform', 'OTransform', 'msTransform'],
@@ -151,16 +152,41 @@ function Peppermint(_this, options) {
 		var start = {},
 			diff = {},
 			isScrolling,
-			touchInProgress = false;
+			clicksDenied = false;
 
-		if (support.msPointerEvents) {
+		if (support.pointerEvents) {
+			//Pointer events
+			var p = 2,
+				tEvents = {
+					start: 'pointerdown',
+					move: 'pointermove',
+					end: 'pointerup',
+					cancel: 'pointercancel'
+				},
+				setCapture = function(id) {
+					//capture events if the pointer goes off of the element
+					slideBlock.setPointerCapture(id);
+				},
+				check = function(e) {
+					//In Pointer event model, multitouch invokes separate events for each finger. First touch is primary.
+					//If it's not primary or if it's not touch at all -- we shouldn't bother.
+					return !e.isPrimary || e.pointerType !== 'touch';
+				};
+		}
+		else if (support.msPointerEvents) {
 			//MSPointer events
-			var p = true,
+			var p = 1,
 				tEvents = {
 					start: 'MSPointerDown',
 					move: 'MSPointerMove',
 					end: 'MSPointerUp',
 					cancel: 'MSPointerCancel'
+				},
+				setCapture = function(id) {
+					slideBlock.msSetPointerCapture(id);
+				},
+				check = function(e) {
+					return !e.isPrimary || e.pointerType !== e.MSPOINTER_TYPE_TOUCH;
 				};
 		}
 		else {
@@ -171,14 +197,15 @@ function Peppermint(_this, options) {
 					move: 'touchmove',
 					end: 'touchend',
 					cancel: 'touchcancel'
+				},
+				check = function(e) {
+					//if it's multitouch or pinch move -- do nothing
+					return (event.touches && event.touches.length > 1) || (event.scale && event.scale !== 1);
 				};
 		}
 
 		function tStart(event) {
-			//In MSPointer event model, multitouch invokes separate events for each finger. First touch is primary.
-			//If it's not primary or if it's not touch at all -- we shouldn't bother.
-			if (p
-				&& (!event.isPrimary || event.pointerType !== event.MSPOINTER_TYPE_TOUCH)) return;
+			if (check(event)) return;
 
 			//remember starting time and position
 			start = {
@@ -193,16 +220,15 @@ function Peppermint(_this, options) {
 
 			diff = {};
 
-			if (p) touchInProgress = true;
+			if (p) {
+				clicksDenied = true;
+				setCapture(event.pointerId);
+			}
 		}
 
 		function tMove(event) {
-			//if the user is trying to scroll vertically,
-			//if it's multitouch or pinch move,
-			//if it's an MSPointerEvent and the event is not primary or touch is not in progress -- do nothing.
-			if (isScrolling ||
-				((event.touches && event.touches.length > 1) || (event.scale && event.scale !== 1)) ||
-				(p && (!event.isPrimary || !touchInProgress))) return;
+			//if user is trying to scroll vertically -- do nothing
+			if (isScrolling || check(event)) return;
 
 			diff.x = (p? event.clientX : event.touches[0].clientX) - start.x;
 
@@ -240,8 +266,7 @@ function Peppermint(_this, options) {
 			//This way the outline will remain visible when tabbing through the links.
 			event.target && event.target.blur();
 			
-			if (isScrolling ||
-				(p && !event.isPrimary)) return;
+			if (isScrolling || check(event)) return;
 
 			//duration of the touch move
 			var duration = Number(+new Date - start.time);
@@ -269,11 +294,11 @@ function Peppermint(_this, options) {
 			//This fixes IE's dumb behaviour.
 			if (p) {
 				if (diff.x === undefined) {
-					touchInProgress = false;
+					clicksDenied = false;
 				}
 				else {
 					setTimeout(function() {
-						touchInProgress = false;
+						clicksDenied = false;
 					}, 10)
 				}
 			}
@@ -288,7 +313,7 @@ function Peppermint(_this, options) {
 		//No clicking during touch for IE
 		if (p) {
 			addEvent(slideBlock, 'click', function(event) {
-				touchInProgress && event.preventDefault();
+				clicksDenied && event.preventDefault();
 			}, false);
 		}
 	}

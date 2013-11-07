@@ -15,6 +15,7 @@
 	position: relative;
 	overflow: hidden;
 	-ms-touch-action: pan-y;
+	touch-action: pan-y;
 }
 
 .peppermint.active .slides > * {
@@ -43,4 +44,3 @@
 	-ms-backface-visibility: hidden;
 	backface-visibility: hidden;
 }
-
