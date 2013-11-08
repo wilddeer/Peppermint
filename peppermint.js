@@ -10,8 +10,11 @@ function Peppermint(_this, options) {
 
 	o.speed = o.speed || 300; // transition between slides in ms
 	o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
+	o.slideshow = o.slideshow || false;
 	o.slideshowInterval = o.slideshowInterval || 4000;
+	o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false;
 	o.startSlide = o.startSlide || 0;
+	o.dots = o.dots || false;
 	
 	var slider = {
 			slides: [],
@@ -290,6 +293,8 @@ function Peppermint(_this, options) {
 				changeActiveSlide(activeSlide);
 			}
 
+			o.stopSlideshowAfterInteraction && stopSlideshow();
+
 			//IE likes to open a link under your finger after touchmove.
 			//This fixes IE's dumb behaviour.
 			if (p) {
@@ -366,6 +371,7 @@ function Peppermint(_this, options) {
 					//so I just defocus the dot on click & set `outline: none` for `:active` in css.
 					b.blur();
 					changeActiveSlide(x);
+					o.stopSlideshowAfterInteraction && stopSlideshow();
 				};
 			})(i, dot), false);
 
@@ -375,6 +381,7 @@ function Peppermint(_this, options) {
 				return function(event) {
 					if (event.keyCode == 13) {
 						changeActiveSlide(x);
+						o.stopSlideshowAfterInteraction && stopSlideshow();
 					}
 				};
 			})(i), false);
@@ -487,7 +494,7 @@ function Peppermint(_this, options) {
 		},
 
 		//invoke this when the slider's width is changed
-		onWidthChange: function() {
+		recalcWidth: function() {
 			onWidthChange();
 		}
 	};
