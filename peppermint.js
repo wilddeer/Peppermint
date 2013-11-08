@@ -409,6 +409,7 @@ function Peppermint(_this, options) {
 
 		slideWidth = 100/slidesNumber;
 
+		//+1% to compensate rounding errors
 		slideBlock.style.width = (slidesNumber*100+1)+'%';
 
 		_this.className += ' active';
