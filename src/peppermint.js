@@ -1,10 +1,3 @@
-/*
-* Peppermint touch slider
-* v. 0.9.0 | https://github.com/wilddeer/Peppermint
-* Copyright Oleg Korsunsky | http://wd.dizaina.net/
-*
-* MIT License
-*/
 function Peppermint(_this, options) {
 	var o = options || {};
 
