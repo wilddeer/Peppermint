@@ -50,6 +50,9 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	-moz-tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
 }
 
 .peppermint.active > ul.dots > li > span {
