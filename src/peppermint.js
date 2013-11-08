@@ -319,8 +319,10 @@ function Peppermint(_this, options) {
 	//this should be invoked when the width of the slider is changed
 	function onWidthChange() {
 		slider.width = _this.offsetWidth;
+
+		//have to do this in `px` because of webkit's rounding errors :-(
+		slideBlock.style.width = slider.width*slidesNumber+'px';
 		for (var i = 0; i < slidesNumber; i++) {
-			//have to do this in `px` because of webkit's rounding error :-(
 			slider.slides[i].style.width = slider.width+'px';
 		}
 		changePos(-activeSlide*slider.width);
@@ -402,15 +404,13 @@ function Peppermint(_this, options) {
 
 		slideWidth = 100/slidesNumber;
 
-		//+1% to compensate rounding errors
-		slideBlock.style.width = (slidesNumber*100+1)+'%';
-
 		_this.className += ' active';
 		
 		slider.width = _this.offsetWidth;
 
+		//have to do this in `px` because of webkit's rounding errors :-(
+		slideBlock.style.width = slider.width*slidesNumber+'px';
 		for (var i = 0; i < slidesNumber; i++) {
-			//have to do this in `px` because of webkit's rounding error :-(
 			slider.slides[i].style.width = slider.width+'px';
 			slideBlock.appendChild(slider.slides[i]);
 		}
