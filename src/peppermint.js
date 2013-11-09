@@ -47,10 +47,10 @@ function Peppermint(_this, options) {
 		else if (n !== activeSlide) {
 			//change active dot
 			for (var i in slider.dots) {
-				slider.dots[i].className = slider.dots[i].className.replace(' active', '');
+				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' active ', '').replace(/^\s+|\s+$/g, '');
 			}
 
-			slider.dots[n].className += ' active';
+			slider.dots[n].className = (slider.dots[n].className + ' active').replace(/^\s+|\s+$/g, '');
 
 			activeSlide = n;
 		}
