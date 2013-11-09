@@ -9,7 +9,7 @@ Yet another touch-slider. Only better.
 - Only 5 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
-- Works with keyboard, doesn't break when tabbing (other sliders do, go try it!)
+- Doesn't break when <kbd>tab</kbd>'bing (other sliders do, go try it out!)
 
 ##Kit
 
