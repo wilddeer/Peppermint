@@ -168,7 +168,10 @@
 				slideshow: true,
 				speed: 500,
 				slideshowInterval: 5000,
-				stopSlideshowAfterInteraction: true
+				stopSlideshowAfterInteraction: true,
+				onSetup: function(n) {
+					console.log('Peppermint setup done. Slides found: ' + n);
+				}
 			});
 
 			addEvent(document.getElementById('js-right'), 'click', slider.next, false);
