@@ -83,7 +83,7 @@ function Peppermint(_this, options) {
 		slideBlock.style.OTransitionDuration = 
 		slideBlock.style.transitionDuration = time;
 
-		slideBlock.style.webkitTransform = 'translate('+pos+'px,0)' + 'translateZ(0)';
+		slideBlock.style.webkitTransform = 'translate('+pos+'px,0) translateZ(0)';
 		slideBlock.style.msTransform = 
 		slideBlock.style.MozTransform = 
 		slideBlock.style.OTransform = 
@@ -203,7 +203,7 @@ function Peppermint(_this, options) {
 				},
 				check = function(e) {
 					//if it's multitouch or pinch move -- do nothing
-					return (event.touches && event.touches.length > 1) || (event.scale && event.scale !== 1);
+					return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
 				};
 		}
 
@@ -479,7 +479,7 @@ function Peppermint(_this, options) {
 			stopSlideshow();
 		},
 
-		//pause slideshow until next slide change
+		//pause slideshow until the next slide change
 		pause: function() {
 			pauseSlideshow();
 		},
