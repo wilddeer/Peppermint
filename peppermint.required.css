@@ -35,7 +35,7 @@
 }
 
 .peppermint.active,
-.peppermint.active .captions,
+.peppermint.active .dots,
 .peppermint.active .slides,
 .peppermint.active .slides > * {
 	-webkit-transform: translate3d(0,0,0);
