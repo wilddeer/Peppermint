@@ -31,12 +31,16 @@
 
 /* dots */
 .peppermint.active ul.dots {
-	margin: 0.6em 0 0 0;
+	margin: 0 0 0.6em 0;
 	padding: 0;
 	list-style-type: none;
 }
 
-.peppermint.active > ul.dots > li {
+.peppermint.active .slides + ul.dots {
+	margin: 0.6em 0 0 0;
+}
+
+.peppermint.active ul.dots > li {
 	display: inline-block;
 	position: relative;
 	padding: 0.5em;
@@ -56,7 +60,7 @@
 	zoom: 1;
 }
 
-.peppermint.active > ul.dots > li > span {
+.peppermint.active ul.dots > li > span {
 	display: inline-block;
 	position: absolute;
 	top: 50%;
@@ -68,7 +72,7 @@
 	background: #9b9890;
 }
 
-.peppermint.active > ul.dots > li.active > span {
+.peppermint.active ul.dots > li.active > span {
 	margin: -6px 0 0 -6px;
 	width: 10px;
 	height: 10px;
@@ -76,6 +80,6 @@
 	background: transparent;
 }
 
-.peppermint.active > ul.dots > li:active {
+.peppermint.active ul.dots > li:active {
 	outline: none;
 }

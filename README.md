@@ -1,16 +1,18 @@
 #Peppermint touch slider
 
+[Check out the demo](http://wd.dizaina.net/en/scripts/peppermint/)
+
 Yet another touch slider. Only better.
 
 - Works with [Touch Events](http://www.w3.org/TR/touch-events/), [Pointer Events](http://www.w3.org/TR/pointerevents/), old [IE10 Point Erevents](http://msdn.microsoft.com/en-us/library/ie/hh673557\(v=vs.85\).aspx)
 - Works on iPhones, Androids, Windows Phones, Blackberries, Windows 8 devices
 - IE7+ compatible, IE10+ with animations
 - Library agnostic. If jQuery is available, registers itself as a plugin.
-- Uses CSS3 transforms & animations
+- Uses CSS3 transforms &amp; animations
 - Only 5 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
-- Doesn't break when <kbd>tab</kbd>'bing (other sliders do, go try it out!)
+- [Doesn't break](http://wd.dizaina.net//en/internet-maintenance/sliders-and-tab-button/) when <kbd>tab</kbd>&rsquo;bing
 
 ##Kit
 
@@ -67,6 +69,9 @@ Peppermint can take settings object as an optional second parameter (first when 
 	
 	  //show dots
 	  dots: false,
+
+	  //dots before slides
+	  dotsFirst: false,
 	
 	  //Callback function, runs at slide change.
 	  //Receives slide number as a parameter.
@@ -123,4 +128,4 @@ Example:
 	
 ##License
 
-MIT license
+[MIT license](http://opensource.org/licenses/MIT).

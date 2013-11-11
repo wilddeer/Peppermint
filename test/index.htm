@@ -174,6 +174,28 @@
 		</figure>
 	</div>
 
+	<h1>Dots first, start from 3rd slide</h1>
+
+	<div class="peppermint dotsfirst-test">
+		<figure>
+			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+			<figcaption>cat!</figcaption>
+		</figure>
+
+		<figure>
+			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+			<figcaption>it's a cat!</figcaption>
+		</figure>
+	</div>
+
 	<script src="js/jquery-1.10.2.min.js"></script>
 	<script src="../peppermint.min.js"></script>
 
@@ -247,6 +269,13 @@
 			$('.singleslide-test').Peppermint({
 				slideshow: true,
 				dots: true
+			});
+
+			$('.dotsfirst-test').Peppermint({
+				slideshow: true,
+				dots: true,
+				dotsFirst: true,
+				startSlide: 2
 			});
 
 		})();

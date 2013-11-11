@@ -8,6 +8,7 @@ function Peppermint(_this, options) {
 	o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false;
 	o.startSlide = o.startSlide || 0;
 	o.dots = o.dots || false;
+	o.dotsFirst = o.dotsFirst || false;
 	
 	var slider = {
 			slides: [],
@@ -417,6 +418,7 @@ function Peppermint(_this, options) {
 
 		_this.appendChild(slideBlock);
 
+		//append dots
 		if (o.dots) {
 			dotBlock = document.createElement('ul');
 			dotBlock.className = 'dots';
@@ -425,7 +427,12 @@ function Peppermint(_this, options) {
 				dotBlock.appendChild(slider.dots[i]);
 			}
 
-			_this.appendChild(dotBlock);
+			if (o.dotsFirst) {
+				_this.insertBefore(dotBlock,_this.firstChild);
+			}
+			else {
+				_this.appendChild(dotBlock);
+			}
 		}
 
 		//watch for slider width changes

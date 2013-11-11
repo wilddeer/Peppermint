@@ -15,6 +15,7 @@ function Peppermint(_this, options) {
 	o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false;
 	o.startSlide = o.startSlide || 0;
 	o.dots = o.dots || false;
+	o.dotsFirst = o.dotsFirst || false;
 	
 	var slider = {
 			slides: [],
@@ -53,7 +54,7 @@ function Peppermint(_this, options) {
 		}
 		else if (n !== activeSlide) {
 			//change active dot
-			for (var i in slider.dots) {
+			for (var i = slider.dots.length - 1; i >= 0; i--) {
 				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' active ', '').replace(/^\s+|\s+$/g, '');
 			}
 
@@ -424,6 +425,7 @@ function Peppermint(_this, options) {
 
 		_this.appendChild(slideBlock);
 
+		//append dots
 		if (o.dots) {
 			dotBlock = document.createElement('ul');
 			dotBlock.className = 'dots';
@@ -432,7 +434,12 @@ function Peppermint(_this, options) {
 				dotBlock.appendChild(slider.dots[i]);
 			}
 
-			_this.appendChild(dotBlock);
+			if (o.dotsFirst) {
+				_this.insertBefore(dotBlock,_this.firstChild);
+			}
+			else {
+				_this.appendChild(dotBlock);
+			}
 		}
 
 		//watch for slider width changes
