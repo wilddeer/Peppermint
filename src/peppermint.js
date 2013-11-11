@@ -46,7 +46,7 @@ function Peppermint(_this, options) {
 		}
 		else if (n !== activeSlide) {
 			//change active dot
-			for (var i in slider.dots) {
+			for (var i = slider.dots.length - 1; i >= 0; i--) {
 				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' active ', '').replace(/^\s+|\s+$/g, '');
 			}
 
