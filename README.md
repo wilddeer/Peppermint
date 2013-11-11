@@ -4,8 +4,9 @@ Yet another touch slider. Only better.
 
 - Works with [Touch Events](http://www.w3.org/TR/touch-events/), [Pointer Events](http://www.w3.org/TR/pointerevents/), old [IE10 Point Erevents](http://msdn.microsoft.com/en-us/library/ie/hh673557\(v=vs.85\).aspx)
 - Works on iPhones, Androids, Windows Phones, Blackberries, Windows 8 devices
-- Library agnostic. If jQuery is available, registers itself as a plugin.
 - IE7+ compatible, IE10+ with animations
+- Library agnostic. If jQuery is available, registers itself as a plugin.
+- Uses CSS3 transforms & animations
 - Only 5 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
@@ -15,7 +16,7 @@ Yet another touch slider. Only better.
 
 - **peppermint.min.js** -- minified production script
 - **peppermint.required.css** -- styles required for proper functioning
-- **peppermint.suggested.css** -- default styles to start with
+- **peppermint.suggested.css** -- default styles to start with (doesn't include required styles!)
 
 ##Usage
 
