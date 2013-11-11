@@ -18,7 +18,7 @@ Yet another touch slider. Only better.
 
 - **peppermint.min.js** -- minified production script
 - **peppermint.required.css** -- styles required for proper functioning
-- **peppermint.suggested.css** -- default styles to start with (doesn't include required styles!)
+- **peppermint.suggested.css** -- default styles to start with (required styles not included!)
 
 ##Usage
 
