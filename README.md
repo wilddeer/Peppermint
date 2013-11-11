@@ -12,7 +12,7 @@ Yet another touch slider. Only better.
 - Only 5 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
-- [Doesn't break](http://wd.dizaina.net//en/internet-maintenance/sliders-and-tab-button/) when <kbd>tab</kbd>&rsquo;bing
+- [Doesn't break](http://wd.dizaina.net/en/internet-maintenance/js-sliders-and-the-tab-key/) when <kbd>tab</kbd>&rsquo;bing
 
 ##Kit
 
@@ -61,7 +61,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 	  //slideshow interval, ms
 	  slideshowInterval: 4000,
 	
-	  //stop slideshow after user interaction with the slider
+	  //stop slideshow after user interacts with the slider
 	  stopSlideshowAfterInteraction: false,
 	
 	  //starting slide
