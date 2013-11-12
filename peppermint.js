@@ -16,6 +16,7 @@ function Peppermint(_this, options) {
 	o.startSlide = o.startSlide || 0;
 	o.dots = o.dots || false;
 	o.dotsFirst = o.dotsFirst || false;
+	o.mouseMove = o.mouseMove || false;
 	
 	var slider = {
 			slides: [],
@@ -156,6 +157,7 @@ function Peppermint(_this, options) {
 		var start = {},
 			diff = {},
 			isScrolling,
+			touchInProgress = false,
 			clicksDenied = false;
 
 		if (support.pointerEvents) {
@@ -165,7 +167,7 @@ function Peppermint(_this, options) {
 					start: 'pointerdown',
 					move: 'pointermove',
 					end: 'pointerup',
-					cancel: 'pointercancel'
+					cancel: 'pointerleave'
 				},
 				setCapture = function(id) {
 					//capture events if the pointer goes off of the element
@@ -174,7 +176,7 @@ function Peppermint(_this, options) {
 				check = function(e) {
 					//In Pointer event model, multitouch invokes separate events for each finger. First touch is primary.
 					//If it's not primary or if it's not touch at all -- we shouldn't bother.
-					return !e.isPrimary || e.pointerType !== 'touch';
+					return !e.isPrimary /*|| e.pointerType !== 'touch'*/;
 				};
 		}
 		else if (support.msPointerEvents) {
@@ -211,35 +213,37 @@ function Peppermint(_this, options) {
 		function tStart(event) {
 			if (check(event)) return;
 
+			event.preventDefault();
+
 			//remember starting time and position
 			start = {
-				x: (p?event.clientX:event.touches[0].clientX),
-				y: (p?event.clientY:event.touches[0].clientY),
+				x: event.clientX || event.touches[0].clientX,
+				y: event.clientY || event.touches[0].clientY,
 
 				time: +new Date
 			};
 			
 			//reset `isScrolling` and `diff`
 			isScrolling = undefined;
-
+			touchInProgress = true;
 			diff = {};
 
 			if (p) {
 				clicksDenied = true;
-				setCapture(event.pointerId);
+				//event.pointerId && setCapture(event.pointerId);
 			}
 		}
 
 		function tMove(event) {
 			//if user is trying to scroll vertically -- do nothing
-			if (isScrolling || check(event)) return;
+			if (isScrolling || !touchInProgress || check(event)) return;
 
-			diff.x = (p? event.clientX : event.touches[0].clientX) - start.x;
+			diff.x = (event.clientX || event.touches[0].clientX) - start.x;
 
 			//check whether the user is trying to scroll vertically
 			if (isScrolling === undefined) {
 				//`diff.y` is only required for this check
-				diff.y = (p? event.clientY : event.touches[0].clientY) - start.y;
+				diff.y = (event.clientY || event.touches[0].clientY) - start.y;
 				//assign and check `isScrolling` at the same time
 				if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y))) return;
 			}
@@ -270,7 +274,7 @@ function Peppermint(_this, options) {
 			//This way the outline will remain visible when tabbing through the links.
 			event.target && event.target.blur();
 			
-			if (isScrolling || check(event)) return;
+			if (isScrolling || !touchInProgress || check(event)) return;
 
 			//duration of the touch move
 			var duration = Number(+new Date - start.time);
@@ -296,17 +300,17 @@ function Peppermint(_this, options) {
 
 			o.stopSlideshowAfterInteraction && stopSlideshow();
 
+			touchInProgress = false;
+
 			//IE likes to open a link under your finger after touchmove.
 			//This fixes IE's dumb behaviour.
-			if (p) {
-				if (diff.x === undefined) {
+			if (!diff.x) {
+				clicksDenied = false;
+			}
+			else {
+				setTimeout(function() {
 					clicksDenied = false;
-				}
-				else {
-					setTimeout(function() {
-						clicksDenied = false;
-					}, 10)
-				}
+				}, 10)
 			}
 		}
 
@@ -316,12 +320,20 @@ function Peppermint(_this, options) {
 		addEvent(slideBlock, tEvents.end, tEnd, false);
 		addEvent(slideBlock, tEvents.cancel, tEnd, false);
 
+		addEvent(slideBlock, 'dragstart', function(e){e.preventDefault();}, false);
+
+		/*if (!p) {*/
+			//bind the events
+			addEvent(slideBlock, 'mousedown', tStart, false);
+			addEvent(slideBlock, 'mousemove', tMove, false);
+			addEvent(slideBlock, 'mouseup', tEnd, false);
+			addEvent(slideBlock, 'mouseleave', tEnd, false);
+		/*}*/
+
 		//No clicking during touch for IE
-		if (p) {
-			addEvent(slideBlock, 'click', function(event) {
-				clicksDenied && event.preventDefault();
-			}, false);
-		}
+		addEvent(slideBlock, 'click', function(event) {
+			clicksDenied && event.preventDefault();
+		}, false);
 	}
 	
 	//this should be invoked when the width of the slider is changed
