@@ -17,6 +17,12 @@ function Peppermint(_this, options) {
 	o.dots = o.dots || false;
 	o.dotsFirst = o.dotsFirst || false;
 	o.mouseMove = o.mouseMove || false;
+	o.cssPrefix = o.cssPrefix || '';
+
+	var classes = {
+		active: o.cssPrefix + 'active',
+		mouse: o.cssPrefix + 'mouse'
+	}
 	
 	var slider = {
 			slides: [],
@@ -56,10 +62,10 @@ function Peppermint(_this, options) {
 		else if (n !== activeSlide) {
 			//change active dot
 			for (var i = slider.dots.length - 1; i >= 0; i--) {
-				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' active ', '').replace(/^\s+|\s+$/g, '');
+				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' '+classes.active+' ', '').replace(/^\s+|\s+$/g, '');
 			}
 
-			slider.dots[n].className = (slider.dots[n].className + ' active').replace(/^\s+|\s+$/g, '');
+			slider.dots[n].className = (slider.dots[n].className + ' '+classes.active).replace(/^\s+|\s+$/g, '');
 
 			activeSlide = n;
 		}
@@ -158,7 +164,7 @@ function Peppermint(_this, options) {
 			diff = {},
 			isScrolling,
 			touchInProgress = false,
-			clicksDenied = false;
+			clicksAllowed = true;
 
 		if (support.pointerEvents) {
 			//Pointer events
@@ -169,15 +175,16 @@ function Peppermint(_this, options) {
 					end: 'pointerup',
 					cancel: 'pointerleave'
 				},
-				setCapture = function(id) {
-					//capture events if the pointer goes off of the element
-					slideBlock.setPointerCapture(id);
-				},
-				check = function(e) {
-					//In Pointer event model, multitouch invokes separate events for each finger. First touch is primary.
-					//If it's not primary or if it's not touch at all -- we shouldn't bother.
-					return !e.isPrimary /*|| e.pointerType !== 'touch'*/;
-				};
+				check = (o.mouseMove?
+					function(e) {
+						return !e.isPrimary;
+					}:
+					function(e) {
+						//In Pointer event model, multitouch invokes separate events for each finger. First touch is primary.
+						//If it's not primary or if it's not touch at all -- we shouldn't bother.
+						return !e.isPrimary || (e.pointerType !== 'touch' && e.pointerType !== 'pen');
+					}
+				)
 		}
 		else if (support.msPointerEvents) {
 			//MSPointer events
@@ -187,9 +194,6 @@ function Peppermint(_this, options) {
 					move: 'MSPointerMove',
 					end: 'MSPointerUp',
 					cancel: 'MSPointerCancel'
-				},
-				setCapture = function(id) {
-					slideBlock.msSetPointerCapture(id);
 				},
 				check = function(e) {
 					return !e.isPrimary || e.pointerType !== e.MSPOINTER_TYPE_TOUCH;
@@ -210,10 +214,10 @@ function Peppermint(_this, options) {
 				};
 		}
 
-		function tStart(event) {
-			if (check(event)) return;
+		function tStart(event, eType) {
+			clicksAllowed = true;
 
-			event.preventDefault();
+			if (check(event)) return;
 
 			//remember starting time and position
 			start = {
@@ -227,11 +231,6 @@ function Peppermint(_this, options) {
 			isScrolling = undefined;
 			touchInProgress = true;
 			diff = {};
-
-			if (p) {
-				clicksDenied = true;
-				//event.pointerId && setCapture(event.pointerId);
-			}
 		}
 
 		function tMove(event) {
@@ -239,6 +238,8 @@ function Peppermint(_this, options) {
 			if (isScrolling || !touchInProgress || check(event)) return;
 
 			diff.x = (event.clientX || event.touches[0].clientX) - start.x;
+
+			if (diff.x) clicksAllowed = false;
 
 			//check whether the user is trying to scroll vertically
 			if (isScrolling === undefined) {
@@ -291,7 +292,6 @@ function Peppermint(_this, options) {
 				else {
 					changeActiveSlide(activeSlide-1, o.touchSpeed);	
 				}
-
 			}
 			//else return to the current slide
 			else {
@@ -301,38 +301,37 @@ function Peppermint(_this, options) {
 			o.stopSlideshowAfterInteraction && stopSlideshow();
 
 			touchInProgress = false;
+		}
 
-			//IE likes to open a link under your finger after touchmove.
-			//This fixes IE's dumb behaviour.
-			if (!diff.x) {
-				clicksDenied = false;
-			}
-			else {
-				setTimeout(function() {
-					clicksDenied = false;
-				}, 10)
-			}
+		function tCancel(event) {
+			if (isScrolling || !touchInProgress || check(event)) return;
+
+			changeActiveSlide(activeSlide);
+
+			o.stopSlideshowAfterInteraction && stopSlideshow();
+
+			touchInProgress = false;
 		}
 
 		//bind the events
 		addEvent(slideBlock, tEvents.start, tStart, false);
 		addEvent(slideBlock, tEvents.move, tMove, false);
 		addEvent(slideBlock, tEvents.end, tEnd, false);
-		addEvent(slideBlock, tEvents.cancel, tEnd, false);
+		addEvent(slideBlock, tEvents.cancel, tCancel, false);
 
 		addEvent(slideBlock, 'dragstart', function(e){e.preventDefault();}, false);
 
-		/*if (!p) {*/
+		if (o.mouseMove && !p) {
 			//bind the events
-			addEvent(slideBlock, 'mousedown', tStart, false);
+			addEvent(slideBlock, 'mousedown', function(e) {tStart(e, 0);}, false);
 			addEvent(slideBlock, 'mousemove', tMove, false);
 			addEvent(slideBlock, 'mouseup', tEnd, false);
-			addEvent(slideBlock, 'mouseleave', tEnd, false);
-		/*}*/
+			addEvent(slideBlock, 'mouseleave', tCancel, false);
+		}
 
 		//No clicking during touch for IE
 		addEvent(slideBlock, 'click', function(event) {
-			clicksDenied && event.preventDefault();
+			clicksAllowed || event.preventDefault();
 		}, false);
 	}
 	
@@ -424,7 +423,7 @@ function Peppermint(_this, options) {
 
 		slideWidth = 100/slidesNumber;
 
-		_this.className += ' active';
+		_this.className += ' ' + classes.active + (o.mouseMove?' ' + classes.mouse:'');
 		
 		slider.width = _this.offsetWidth;
 

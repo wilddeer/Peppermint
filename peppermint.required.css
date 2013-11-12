@@ -47,3 +47,21 @@
 	-ms-backface-visibility: hidden;
 	backface-visibility: hidden;
 }
+
+.peppermint.mouse .slides * {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: move;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+	cursor: grab;
+}
+
+.peppermint.mouse .slides *:active {
+	cursor: move;
+	cursor: -webkit-grabbing !important;
+	cursor: -moz-grabbing;
+	cursor: grabbing;
+}
