@@ -353,7 +353,7 @@ function Peppermint(_this, options) {
 	function setup() {
 		//If the UA doesn't support css transforms -- use fallback function.
 		//It's a separate function for perfomance reasons.
-		if (!support.transform) changePos = changePosFallback;
+		if (!support.transform || !!(window.opera)) changePos = changePosFallback;
 
 		slideBlock = document.createElement('div');
 		slideBlock.className = 'slides';
