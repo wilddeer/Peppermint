@@ -48,7 +48,7 @@
 	backface-visibility: hidden;
 }
 
-.peppermint.mouse .slides * {
+.peppermint.mouse .slides {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -61,7 +61,7 @@
 
 .peppermint.mouse .slides *:active {
 	cursor: move;
-	cursor: -webkit-grabbing !important;
+	cursor: -webkit-grabbing;
 	cursor: -moz-grabbing;
 	cursor: grabbing;
 }

@@ -212,6 +212,9 @@ function Peppermint(_this, options) {
 
 			if (check(event)) return;
 
+			//fixes WebKit's cursor while drugging
+			if (eType === 0) event.preventDefault();
+
 			//remember starting time and position
 			start = {
 				x: event.clientX || event.touches[0].clientX,
