@@ -156,91 +156,66 @@ function Peppermint(_this, options) {
 		var start = {},
 			diff = {},
 			isScrolling,
-			touchInProgress = false,
-			clicksAllowed = true;
-
-		if (support.pointerEvents) {
-			//Pointer events
-			var p = 2,
-				tEvents = {
-					start: 'pointerdown',
-					move: 'pointermove',
-					end: 'pointerup',
-					cancel: 'pointerleave'
-				},
-				check = (o.mouseMove?
-					function(e) {
-						return !e.isPrimary;
-					}:
-					function(e) {
-						//In Pointer event model, multitouch invokes separate events for each finger. First touch is primary.
-						//If it's not primary or if it's not touch at all -- we shouldn't bother.
-						return !e.isPrimary || (e.pointerType !== 'touch' && e.pointerType !== 'pen');
-					}
-				)
-		}
-		else if (support.msPointerEvents) {
-			//MSPointer events
-			var p = 1,
-				tEvents = {
-					start: 'MSPointerDown',
-					move: 'MSPointerMove',
-					end: 'MSPointerUp',
-					cancel: 'MSPointerCancel'
-				},
-				check = function(e) {
-					return !e.isPrimary || e.pointerType !== e.MSPOINTER_TYPE_TOUCH;
-				};
-		}
-		else {
-			//touch events
-			var p = false,
-				tEvents = {
-					start: 'touchstart',
-					move: 'touchmove',
-					end: 'touchend',
-					cancel: 'touchcancel'
-				},
-				check = function(e) {
+			eventType,
+			clicksAllowed = true,
+			eventModel = (support.pointerEvents? 1 : (support.msPointerEvents? 2 : 0)),
+			events = [
+				['touchstart', 'touchmove', 'touchend'],
+				['pointerdown', 'pointermove', 'pointerup'],
+				['MSPointerDown', 'MSPointerMove', 'MSPointerUp'],
+				['mousedown', 'mousemove', 'mouseup']
+			],
+			checks = [
+				function(e) {
 					//if it's multitouch or pinch move -- do nothing
 					return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
-				};
-		}
+				},
+				function(e) {
+					return !e.isPrimary || (!o.mouseMove && e.pointerType !== 'touch' && e.pointerType !== 'pen');
+				},
+				function(e) {
+					return !e.isPrimary || (!o.mouseMove && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
+				},
+				function() {return false;}
+			];
 
 		function tStart(event, eType) {
 			clicksAllowed = true;
+			eventType = eType;
 
-			if (check(event)) return;
+			if (checks[eventType](event)) return;
 
-			//fixes WebKit's cursor while drugging
-			if (eType === 0) event.preventDefault();
+			addEvent(document, events[eventType][1], tMove, false);
+			addEvent(document, events[eventType][2], tEnd, false);
+
+			//fixes WebKit's cursor while dragging
+			if (eventType) event.preventDefault();
 
 			//remember starting time and position
 			start = {
-				x: event.clientX || event.touches[0].clientX,
-				y: event.clientY || event.touches[0].clientY,
+				x: eventType? event.clientX : event.touches[0].clientX,
+				y: eventType? event.clientY : event.touches[0].clientY,
 
 				time: +new Date
 			};
 			
-			//reset `isScrolling` and `diff`
+			//reset
 			isScrolling = undefined;
-			touchInProgress = true;
 			diff = {};
 		}
 
 		function tMove(event) {
 			//if user is trying to scroll vertically -- do nothing
-			if (isScrolling || !touchInProgress || check(event)) return;
+			if (isScrolling || checks[eventType](event)) return;
 
-			diff.x = (event.clientX || event.touches[0].clientX) - start.x;
+			diff.x = (eventType? event.clientX : event.touches[0].clientX) - start.x;
 
 			if (diff.x) clicksAllowed = false;
 
 			//check whether the user is trying to scroll vertically
-			if (isScrolling === undefined) {
+			if (!eventType && isScrolling === undefined) {
 				//`diff.y` is only required for this check
-				diff.y = (event.clientY || event.touches[0].clientY) - start.y;
+				diff.y = (eventType? event.clientY : event.touches[0].clientY) - start.y;
 				//assign and check `isScrolling` at the same time
 				if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y))) return;
 			}
@@ -255,7 +230,7 @@ function Peppermint(_this, options) {
 					(!activeSlide && diff.x > 0
 					|| activeSlide == slidesNumber - 1 && diff.x < 0)
 					?                      
-					(Math.abs(diff.x)/slider.width*2 + 1)
+					(Math.abs(diff.x)/slider.width*3 + 1)
 					:
 					1
 				);
@@ -269,9 +244,9 @@ function Peppermint(_this, options) {
 			//I dont' want to disable the outline completely for accessibility reasons,
 			//so I just defocus it after touch and disable the outline for `:active` link in css.
 			//This way the outline will remain visible when tabbing through the links.
-			event.target && event.target.blur();
+			event.target && event.target.blur && event.target.blur();
 			
-			if (isScrolling || !touchInProgress || check(event)) return;
+			if (isScrolling || checks[eventType](event)) return;
 
 			//duration of the touch move
 			var duration = Number(+new Date - start.time);
@@ -296,33 +271,20 @@ function Peppermint(_this, options) {
 
 			o.stopSlideshowAfterInteraction && stopSlideshow();
 
-			touchInProgress = false;
+			detachEvents();
 		}
 
-		function tCancel(event) {
-			if (isScrolling || !touchInProgress || check(event)) return;
-
-			changeActiveSlide(activeSlide);
-
-			o.stopSlideshowAfterInteraction && stopSlideshow();
-
-			touchInProgress = false;
+		function detachEvents() {
+			removeEvent(document, events[eventType][1], tMove, false);
+			removeEvent(document, events[eventType][2], tEnd, false);
 		}
 
 		//bind the events
-		addEvent(slideBlock, tEvents.start, tStart, false);
-		addEvent(slideBlock, tEvents.move, tMove, false);
-		addEvent(slideBlock, tEvents.end, tEnd, false);
-		addEvent(slideBlock, tEvents.cancel, tCancel, false);
-
+		addEvent(slideBlock, events[eventModel][0], function(e) {tStart(e, eventModel);}, false);
 		addEvent(slideBlock, 'dragstart', function(e){e.preventDefault();}, false);
 
-		if (o.mouseMove && !p) {
-			//bind the events
-			addEvent(slideBlock, 'mousedown', function(e) {tStart(e, 0);}, false);
-			addEvent(slideBlock, 'mousemove', tMove, false);
-			addEvent(slideBlock, 'mouseup', tEnd, false);
-			addEvent(slideBlock, 'mouseleave', tCancel, false);
+		if (o.mouseMove && !eventModel) {
+			addEvent(slideBlock, events[3][0], function(e) {tStart(e, 3);}, false);
 		}
 
 		//No clicking during touch for IE
@@ -343,12 +305,21 @@ function Peppermint(_this, options) {
 		changePos(-activeSlide*slider.width);
 	}
 
-	function addEvent(el, event, func, bool) {
+	function addEvent(el, event, func) {
 		if (el.addEventListener) {
-			el.addEventListener(event, func, bool);
+			el.addEventListener(event, func, false);
 		}
 		else {
 			el.attachEvent('on'+event, func);
+		}
+	}
+
+	function removeEvent(el, event, func) {
+		if (el.removeEventListener) {
+			el.removeEventListener(event, func, false);
+		}
+		else {
+			el.detachEvent('on'+event, func);
 		}
 	}
 
