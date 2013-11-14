@@ -18,6 +18,12 @@
 		a img {
 			border: 0;
 		}
+
+		#peppermint {
+			max-width: 700px;
+			margin: 0 auto;
+			border: 1px dashed #ddd;
+		}
 	</style>
 
 	<title>Test</title>
@@ -197,7 +203,7 @@
 	</div>
 
 	<script src="js/jquery-1.10.2.min.js"></script>
-	<script src="../peppermint.min.js"></script>
+	<script src="../src/peppermint.js"></script>
 
 	<script>
 		(function() {
@@ -217,7 +223,7 @@
 				speed: 500,
 				slideshowInterval: 5000,
 				stopSlideshowAfterInteraction: true,
-				mouseMove: true,
+				mouseDrag: true,
 				onSetup: function(n) {
 					window.console && console.log('Peppermint setup done. Slides found: ' + n);
 				}
@@ -229,6 +235,7 @@
 			$('.jquery-test').Peppermint({
 				dots: true,
 				slideshow: true,
+				mouseDrag: true,
 				onSlideChange: function(n) {
 					$('.js-n').text(n);
 					$('.js-pos').text($('.jquery-test').data('Peppermint').getCurrentPos());

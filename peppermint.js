@@ -16,56 +16,77 @@ function Peppermint(_this, options) {
 	o.startSlide = o.startSlide || 0;
 	o.dots = o.dots || false;
 	o.dotsFirst = o.dotsFirst || false;
-	o.mouseMove = o.mouseMove || false;
+	o.mouseDrag = o.mouseDrag || false;
 	o.cssPrefix = o.cssPrefix || '';
 
 	var classes = {
 		active: o.cssPrefix + 'active',
-		mouse: o.cssPrefix + 'mouse'
+		mouse: o.cssPrefix + 'mouse',
+		drag: o.cssPrefix + 'drag'
 	}
 	
 	var slider = {
 			slides: [],
-			dots: []
+			dots: [],
+			left: 0
 		},
 		slidesNumber,
-		flickThreshold = 250, // Maximum time in ms for flicks
+		flickThreshold = 200, // Maximum time in ms for flicks
 		activeSlide,
 		slideWidth,
 		dotBlock,
 		slideBlock,
 		slideshowTimeoutId,
-		slideshowActive;
+		slideshowActive,
+		animationTimer;
 
 	// feature detects
 	var support = {
 		pointerEvents: !!window.navigator.pointerEnabled,
 		msPointerEvents: !!window.navigator.msPointerEnabled,
-		transform: (function() {
-			var props = ['transform', 'WebkitTransform', 'MozTransform', 'OTransform', 'msTransform'],
-				block = document.createElement('div');
+		transforms: testProp('transform'),
+		transitions: testProp('transition')
+	}
 
-			for (var i in props) {
-				if (block.style[props[i]] !== undefined) return true;
-			}
+	function testProp(prop) {
+		var prefixes = ['Webkit', 'Moz', 'O', 'ms'],
+			block = document.createElement('div');
 
-			return false
-		})()
+		if (block.style[prop] !== undefined) return true;
+
+		prop = prop.charAt(0).toUpperCase() + prop.slice(1);
+		for (var i in prefixes) {
+			if (block.style[prefixes[i]+prop] !== undefined) return true;
+		}
+
+		return false;
+	}
+
+	function addClass(el, cl) {
+		el.className = (el.className + ' ' + cl).replace(/^\s+|\s+$/g, '');
+	}
+
+	function removeClass(el, cl) {
+		el.className = (' ' + el.className + ' ').replace(' ' + cl + ' ', '').replace(/^\s+|\s+$/g, '');
 	}
 
 	//n - slide number (starting from 0)
 	//speed - transition in ms, can be omitted
 	function changeActiveSlide(n, speed) {
-		if (!slider.slides[n]) {
-			n = activeSlide;
+		if (n<0) {
+			n = 0;
 		}
-		else if (n !== activeSlide) {
+		else if (n>slidesNumber-1) {
+			n = slidesNumber-1;
+		}
+		
+		if (n !== activeSlide) {
 			//change active dot
 			for (var i = slider.dots.length - 1; i >= 0; i--) {
-				slider.dots[i].className = (' '+slider.dots[i].className + ' ').replace(' '+classes.active+' ', '').replace(/^\s+|\s+$/g, '');
+				removeClass(slider.dots[i], classes.active);
 			}
 
-			slider.dots[n].className = (slider.dots[n].className + ' '+classes.active).replace(/^\s+|\s+$/g, '');
+			addClass(slider.dots[n], classes.active);
 
 			activeSlide = n;
 		}
@@ -91,24 +112,47 @@ function Peppermint(_this, options) {
 		slideBlock.style.OTransitionDuration = 
 		slideBlock.style.transitionDuration = time;
 
+		setPos(pos);
+	}
+
+	function changePosFallback(pos, speed) {
+		animationTimer && clearInterval(animationTimer);
+
+		if (!speed) {
+			setPos(pos);
+			return;
+		}
+
+		var startTime = +new Date,
+			startPos = slider.left;
+
+		animationTimer = setInterval(function() {
+			var elapsed = +new Date - startTime;
+			
+			if (elapsed > speed) {
+				setPos(pos);
+				clearInterval(animationTimer);
+				return;
+			}
+		
+			setPos(Math.floor(((pos - startPos) * (elapsed / speed) + startPos)));
+	    }, 15);
+	}
+
+	function setPos(pos) {
 		slideBlock.style.webkitTransform = 'translate('+pos+'px,0) translateZ(0)';
 		slideBlock.style.msTransform = 
 		slideBlock.style.MozTransform = 
 		slideBlock.style.OTransform = 
 		slideBlock.style.transform = 'translateX('+pos+'px)';
+
+		slider.left = pos;
 	}
 
-	//fallback function with `left` used instead of `transform`
-	function changePosFallback(pos, speed) {
-		var time = speed?speed+'ms':'';
-
-		slideBlock.style.webkitTransitionDuration = 
-		slideBlock.style.MozTransitionDuration = 
-		slideBlock.style.msTransitionDuration = 
-		slideBlock.style.OTransitionDuration = 
-		slideBlock.style.transitionDuration = time;
-
+	function setPosFallback(pos) {
 		slideBlock.style.left = pos+'px';
+
+		slider.left = pos;
 	}
 
 	function nextSlide() {
@@ -178,10 +222,10 @@ function Peppermint(_this, options) {
 					return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
 				},
 				function(e) {
-					return !e.isPrimary || (!o.mouseMove && e.pointerType !== 'touch' && e.pointerType !== 'pen');
+					return !e.isPrimary || (!o.mouseDrag && e.pointerType !== 'touch' && e.pointerType !== 'pen');
 				},
 				function(e) {
-					return !e.isPrimary || (!o.mouseMove && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
+					return !e.isPrimary || (!o.mouseDrag && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
 				},
 				function() {return false;}
 			];
@@ -196,7 +240,7 @@ function Peppermint(_this, options) {
 			addEvent(document, events[eventType][2], tEnd, false);
 
 			//fixes WebKit's cursor while dragging
-			if (eventType) event.preventDefault();
+			if (eventType) event.preventDefault? event.preventDefault() : event.returnValue = false;
 
 			//remember starting time and position
 			start = {
@@ -206,6 +250,8 @@ function Peppermint(_this, options) {
 				time: +new Date
 			};
 			
+			addClass(_this, classes.drag);
+
 			//reset
 			isScrolling = undefined;
 			diff = {};
@@ -227,7 +273,7 @@ function Peppermint(_this, options) {
 				if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y))) return;
 			}
 
-			event.preventDefault(); //Prevent scrolling
+			event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
 			pauseSlideshow(); //pause slideshow when touch is in progress
 
 			//if it's first slide and moving left or last slide and moving right -- resist!
@@ -255,28 +301,27 @@ function Peppermint(_this, options) {
 			
 			if (isScrolling || checks[eventType](event)) return;
 
-			//duration of the touch move
-			var duration = Number(+new Date - start.time);
-			//whether it was a flick move or not
-			var flick = duration < flickThreshold && Math.abs(diff.x) > 20;
+			if (diff.x) {
+				//duration of the touch move
+				var duration = Number(+new Date - start.time);
+				//whether it was a flick move or not
+				var ratio = Math.abs(diff.x)/slider.width, 
+					skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
+					flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:30);
 
-			//if it was a flick or the move was long enough -- switch the slide
-			if (flick
-				|| (Math.abs(diff.x) > slider.width/4)) {
+				skip += (flick?1:0);
 
 				if (diff.x < 0) {
-					changeActiveSlide(activeSlide+1, o.touchSpeed);
+					changeActiveSlide(activeSlide+skip, o.touchSpeed);
 				}
 				else {
-					changeActiveSlide(activeSlide-1, o.touchSpeed);	
+					changeActiveSlide(activeSlide-skip, o.touchSpeed);	
 				}
-			}
-			//else return to the current slide
-			else {
-				changeActiveSlide(activeSlide);
+
+				o.stopSlideshowAfterInteraction && stopSlideshow();
 			}
 
-			o.stopSlideshowAfterInteraction && stopSlideshow();
+			removeClass(_this, classes.drag);
 
 			detachEvents();
 		}
@@ -290,13 +335,13 @@ function Peppermint(_this, options) {
 		addEvent(slideBlock, events[eventModel][0], function(e) {tStart(e, eventModel);}, false);
 		addEvent(slideBlock, 'dragstart', function(e){e.preventDefault();}, false);
 
-		if (o.mouseMove && !eventModel) {
+		if (o.mouseDrag && !eventModel) {
 			addEvent(slideBlock, events[3][0], function(e) {tStart(e, 3);}, false);
 		}
 
 		//No clicking during touch for IE
 		addEvent(slideBlock, 'click', function(event) {
-			clicksAllowed || event.preventDefault();
+			clicksAllowed || (event.preventDefault? event.preventDefault() : event.returnValue = false);
 		}, false);
 	}
 	
@@ -331,9 +376,10 @@ function Peppermint(_this, options) {
 	}
 
 	function setup() {
-		//If the UA doesn't support css transforms -- use fallback function.
-		//It's a separate function for perfomance reasons.
-		if (!support.transform || !!(window.opera)) changePos = changePosFallback;
+		//If the UA doesn't support css transforms or transitions -- use fallback functions.
+		//Separate functions for better performance.
+		if (!support.transforms) setPos = setPosFallback;
+		if (!support.transitions) changePos = changePosFallback;
 
 		slideBlock = document.createElement('div');
 		slideBlock.className = 'slides';
@@ -397,7 +443,8 @@ function Peppermint(_this, options) {
 
 		slideWidth = 100/slidesNumber;
 
-		_this.className += ' ' + classes.active + (o.mouseMove?' ' + classes.mouse:'');
+		addClass(_this, classes.active);
+		o.mouseDrag && addClass(_this, classes.mouse);
 		
 		slider.width = _this.offsetWidth;
 

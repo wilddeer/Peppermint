@@ -59,7 +59,7 @@
 	cursor: grab;
 }
 
-.peppermint.mouse .slides *:active {
+.peppermint.mouse.drag .slides * {
 	cursor: move;
 	cursor: -webkit-grabbing;
 	cursor: -moz-grabbing;
