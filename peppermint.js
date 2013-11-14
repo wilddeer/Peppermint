@@ -286,7 +286,7 @@ function Peppermint(_this, options) {
 					(!activeSlide && diff.x > 0
 					|| activeSlide == slidesNumber - 1 && diff.x < 0)
 					?                      
-					(Math.abs(diff.x)/slider.width*3 + 1)
+					(Math.abs(diff.x)/slider.width*2 + 1)
 					:
 					1
 				);
