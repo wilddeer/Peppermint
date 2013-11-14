@@ -204,10 +204,10 @@ function Peppermint(_this, options) {
 			clicksAllowed = true,
 			eventModel = (support.pointerEvents? 1 : (support.msPointerEvents? 2 : 0)),
 			events = [
-				['touchstart', 'touchmove', 'touchend'],
-				['pointerdown', 'pointermove', 'pointerup'],
-				['MSPointerDown', 'MSPointerMove', 'MSPointerUp'],
-				['mousedown', 'mousemove', 'mouseup']
+				['touchstart', 'touchmove', 'touchend', 'touchcancel'],
+				['pointerdown', 'pointermove', 'pointerup', 'pointercancel'],
+				['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'],
+				['mousedown', 'mousemove', 'mouseup', false]
 			],
 			checks = [
 				function(e) {
@@ -231,6 +231,7 @@ function Peppermint(_this, options) {
 
 			addEvent(document, events[eventType][1], tMove, false);
 			addEvent(document, events[eventType][2], tEnd, false);
+			addEvent(document, events[eventType][3], tEnd, false);
 
 			//fixes WebKit's cursor while dragging
 			if (eventType) event.preventDefault? event.preventDefault() : event.returnValue = false;
@@ -259,7 +260,7 @@ function Peppermint(_this, options) {
 			if (diff.x) clicksAllowed = false;
 
 			//check whether the user is trying to scroll vertically
-			if (!eventType && isScrolling === undefined) {
+			if (eventType !== 3 && isScrolling === undefined) {
 				//`diff.y` is only required for this check
 				diff.y = (eventType? event.clientY : event.touches[0].clientY) - start.y;
 				//assign and check `isScrolling` at the same time
@@ -351,6 +352,8 @@ function Peppermint(_this, options) {
 	}
 
 	function addEvent(el, event, func) {
+		if (!event) return;
+
 		if (el.addEventListener) {
 			el.addEventListener(event, func, false);
 		}
