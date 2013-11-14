@@ -222,12 +222,14 @@ function Peppermint(_this, options) {
 					return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
 				},
 				function(e) {
-					return !e.isPrimary || (!o.mouseDrag && e.pointerType !== 'touch' && e.pointerType !== 'pen');
+					return !e.isPrimary || e.buttons !== 1 || (!o.mouseDrag && e.pointerType !== 'touch' && e.pointerType !== 'pen');
 				},
 				function(e) {
 					return !e.isPrimary || (!o.mouseDrag && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
 				},
-				function() {return false;}
+				function(e) {
+					return e.button !== 0;
+				}
 			];
 
 		function tStart(event, eType) {
@@ -299,8 +301,6 @@ function Peppermint(_this, options) {
 			//so I just defocus it after touch and disable the outline for `:active` link in css.
 			//This way the outline will remain visible when tabbing through the links.
 			event.target && event.target.blur && event.target.blur();
-			
-			if (isScrolling || checks[eventType](event)) return;
 
 			if (diff.x) {
 				//duration of the touch move
@@ -330,6 +330,7 @@ function Peppermint(_this, options) {
 		function detachEvents() {
 			removeEvent(document, events[eventType][1], tMove, false);
 			removeEvent(document, events[eventType][2], tEnd, false);
+			removeEvent(document, events[eventType][3], tEnd, false);
 		}
 
 		//bind the events
@@ -370,6 +371,8 @@ function Peppermint(_this, options) {
 	}
 
 	function removeEvent(el, event, func) {
+		if (!event) return;
+
 		if (el.removeEventListener) {
 			el.removeEventListener(event, func, false);
 		}
