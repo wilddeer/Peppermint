@@ -301,7 +301,7 @@ function Peppermint(_this, options) {
 				//whether it was a flick move or not
 				var ratio = Math.abs(diff.x)/slider.width, 
 					skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
-					flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:30);
+					flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
 
 				skip += (flick?1:0);
 
