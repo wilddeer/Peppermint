@@ -241,7 +241,8 @@ function Peppermint(_this, options) {
 				//mouse events
 				function(e) {
 					//if left mouse button is not pressed -- skip the event
-					return e.button !== 0;
+					//in IE7-8 `buttons` is not defined
+					return (e.buttons !== undefined && e.buttons !== 1);
 				}
 			];
 
@@ -253,9 +254,9 @@ function Peppermint(_this, options) {
 
 			//add event listeners to the document, so that the slider
 			//will continue to recieve events wherever the pointer is
-			addEvent(document, events[eventType][1], tMove, false);
-			addEvent(document, events[eventType][2], tEnd, false);
-			addEvent(document, events[eventType][3], tEnd, false);
+			addEvent(document, events[eventType][1], tMove);
+			addEvent(document, events[eventType][2], tEnd);
+			addEvent(document, events[eventType][3], tEnd);
 
 			//fixes WebKit's cursor while dragging
 			if (eventType) event.preventDefault? event.preventDefault() : event.returnValue = false;
@@ -350,25 +351,27 @@ function Peppermint(_this, options) {
 
 		//removes the event listeners from the document
 		function detachEvents() {
-			removeEvent(document, events[eventType][1], tMove, false);
-			removeEvent(document, events[eventType][2], tEnd, false);
-			removeEvent(document, events[eventType][3], tEnd, false);
+			removeEvent(document, events[eventType][1], tMove);
+			removeEvent(document, events[eventType][2], tEnd);
+			removeEvent(document, events[eventType][3], tEnd);
 		}
 
 		//bind the touchstart
-		addEvent(slideBlock, events[eventModel][0], function(e) {tStart(e, eventModel);}, false);
+		addEvent(slideBlock, events[eventModel][0], function(e) {tStart(e, eventModel);});
 		//prevent stuff from dragging when using mouse
-		addEvent(slideBlock, 'dragstart', function(e){e.preventDefault();}, false);
+		addEvent(slideBlock, 'dragstart', function(e){
+			event.preventDefault? event.preventDefault() : event.returnValue = false;
+		});
 
 		//bind mousedown if necessary
 		if (o.mouseDrag && !eventModel) {
-			addEvent(slideBlock, events[3][0], function(e) {tStart(e, 3);}, false);
+			addEvent(slideBlock, events[3][0], function(e) {tStart(e, 3);});
 		}
 
 		//No clicking during touch
 		addEvent(slideBlock, 'click', function(event) {
 			clicksAllowed || (event.preventDefault? event.preventDefault() : event.returnValue = false);
-		}, false);
+		});
 	}
 	
 	//this should be invoked when the width of the slider is changed
@@ -437,7 +440,7 @@ function Peppermint(_this, options) {
 					changeActiveSlide(x);
 					o.stopSlideshowAfterInteraction && stopSlideshow();
 				};
-			})(i, dot), false);
+			})(i, dot));
 
 			//Bind the same function to Enter key, except for the `blur` part -- I dont't want
 			//the focus to be lost when the user is using his keyboard to navigate.
@@ -448,7 +451,7 @@ function Peppermint(_this, options) {
 						o.stopSlideshowAfterInteraction && stopSlideshow();
 					}
 				};
-			})(i), false);
+			})(i));
 
 			//This solves tabbing problems:
 			//Cycles through the links found in the slide and switches to that slide
@@ -463,7 +466,7 @@ function Peppermint(_this, options) {
 						}, 0);
 						changeActiveSlide(x);
 					}
-				}(i), false);
+				}(i));
 			};
 
 			slider.dots.push(dot);
@@ -505,8 +508,8 @@ function Peppermint(_this, options) {
 		}
 
 		//watch for slider width changes
-		addEvent(window, 'resize', onWidthChange, false);
-		addEvent(window, 'orientationchange', onWidthChange, false);
+		addEvent(window, 'resize', onWidthChange);
+		addEvent(window, 'orientationchange', onWidthChange);
 
 		//init first slide
 		changeActiveSlide(o.startSlide, 0);
