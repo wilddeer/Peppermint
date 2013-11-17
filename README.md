@@ -4,12 +4,12 @@
 
 Yet another touch slider. Only better.
 
-- Works with [Touch Events](http://www.w3.org/TR/touch-events/), [Pointer Events](http://www.w3.org/TR/pointerevents/), old [IE10 Point Erevents](http://msdn.microsoft.com/en-us/library/ie/hh673557\(v=vs.85\).aspx)
+- Works with mouse, [Touch Events](http://www.w3.org/TR/touch-events/), [Pointer Events](http://www.w3.org/TR/pointerevents/), old [IE10 Point Erevents](http://msdn.microsoft.com/en-us/library/ie/hh673557\(v=vs.85\).aspx)
 - Works on iPhones, Androids, Windows Phones, Blackberries, Windows 8 devices
-- IE7+ compatible, IE10+ with animations
+- IE7+ compatible
 - Library agnostic. If jQuery is available, registers itself as a plugin.
-- Uses CSS3 transforms &amp; animations
-- Only 5 Kb minified
+- Uses CSS3 transforms &amp; animations, falls back to timer animations when necessary
+- Only 6 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
 - [Doesn't break](http://wd.dizaina.net/en/internet-maintenance/js-sliders-and-the-tab-key/) when <kbd>tab</kbd>&rsquo;bing
@@ -72,6 +72,14 @@ Peppermint can take settings object as an optional second parameter (first when 
 
 	  //dots before slides
 	  dotsFirst: false,
+
+	  //use mouse to drag the slider
+	  mouseDrag: false,
+
+	  //Prefix to be used with peppermint classes,
+	  //such as `active`, `mouse` and `drag`.
+	  //Don't forget to change the stylesheet appropriately!
+	  cssPrefix: '',
 	
 	  //Callback function, runs at slide change.
 	  //Receives slide number as a parameter.
