@@ -251,7 +251,7 @@ function Peppermint(_this, options) {
 				//IE10 pointer events
 				function(e) {
 					//same checks as in pointer events
-					return !e.isPrimary || e.buttons !== 1 || (!o.mouseDrag && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
+					return !e.isPrimary || (e.buttons && e.buttons !== 1) || (!o.mouseDrag && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
 				},
 				//mouse events
 				function(e) {
