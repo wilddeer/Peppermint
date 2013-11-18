@@ -121,15 +121,30 @@ function Peppermint(_this, options) {
 			startPos = slider.left;
 
 		animationTimer = setInterval(function() {
-			var elapsed = +new Date - startTime;
+			//rough bezier emulation
+			var diff, y,
+				elapsed = +new Date - startTime,
+				f = elapsed / speed,
+				bezier = [0, 0.7, 1, 1];
+
+			function getPoint(p1, p2) {
+				return (p2-p1)*f + p1;
+			}
 			
-			if (elapsed > speed) {
+			if (f >= 1) {
 				setPos(pos);
 				clearInterval(animationTimer);
 				return;
 			}
 		
-			setPos(Math.floor(((pos - startPos) * (elapsed / speed) + startPos)));
+			diff = pos - startPos;
+
+			y = getPoint(
+					getPoint(getPoint(bezier[0], bezier[1]), getPoint(bezier[1], bezier[2])),
+					getPoint(getPoint(bezier[1], bezier[2]), getPoint(bezier[2], bezier[3]))
+					);
+
+			setPos(Math.floor(y*diff + startPos));
 	    }, 15);
 	}
 
@@ -234,8 +249,8 @@ function Peppermint(_this, options) {
 				//mouse events
 				function(e) {
 					//if left mouse button is not pressed -- skip the event
-					//in IE7-8 `buttons` is not defined
-					return (e.buttons !== undefined && e.buttons !== 1);
+					//in IE7-8 `buttons` is not defined, in IE9 LMB is 0
+					return (e.buttons && e.buttons !== 1);
 				}
 			];
 
