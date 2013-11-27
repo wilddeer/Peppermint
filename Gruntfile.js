@@ -29,7 +29,7 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
-			files: ['src/*.js'],
+			files: ['src/*.js', 'package.json'],
 			tasks: ['build'],
 		},
 	});
