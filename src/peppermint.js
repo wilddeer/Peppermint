@@ -394,22 +394,22 @@ function Peppermint(_this, options) {
 		changePos(-activeSlide*slider.width);
 	}
 
-	function addEvent(el, event, func) {
+	function addEvent(el, event, func, bool) {
 		if (!event) return;
 
 		if (el.addEventListener) {
-			el.addEventListener(event, func, false);
+			el.addEventListener(event, func, !!bool);
 		}
 		else {
 			el.attachEvent('on'+event, func);
 		}
 	}
 
-	function removeEvent(el, event, func) {
+	function removeEvent(el, event, func, bool) {
 		if (!event) return;
 
 		if (el.removeEventListener) {
-			el.removeEventListener(event, func, false);
+			el.removeEventListener(event, func, !!bool);
 		}
 		else {
 			el.detachEvent('on'+event, func);
@@ -428,8 +428,7 @@ function Peppermint(_this, options) {
 		//get slides & generate dots
 		for (var i = 0, l = _this.children.length; i < l; i++) {
 			var slide = _this.children[i],
-				dot = document.createElement('li'),
-				links = slide.getElementsByTagName('a');
+				dot = document.createElement('li');
 
 			slider.slides.push(slide);
 
@@ -462,20 +461,20 @@ function Peppermint(_this, options) {
 			})(i));
 
 			//This solves tabbing problems:
-			//Cycles through the links found in the slide and switches to that slide
-			//when the link is focused. Also resets `scrollLeft` of the slider block.
+			//When an element inside the slide catches focus we switch to that slide
+			//and reset `scrollLeft` of the slider block.
 			//`SetTimeout` solves Chrome's bug.
-			for (var j = links.length - 1; j >= 0; j--) {
-				addEvent(links[j], 'focus', function(x) {
-					return function() {
+			//Event capturing is used to catch the event on the slide level.
+			//Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+			addEvent(slide, 'focus', slide.onfocusin = (function(x) {
+				return function(e) {
+					_this.scrollLeft = 0;
+					setTimeout(function() {
 						_this.scrollLeft = 0;
-						setTimeout(function() {
-							_this.scrollLeft = 0;
-						}, 0);
-						changeActiveSlide(x);
-					}
-				}(i));
-			};
+					}, 0);
+					changeActiveSlide(x);
+				}
+			})(i), true);
 
 			slider.dots.push(dot);
 		}
