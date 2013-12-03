@@ -114,23 +114,25 @@
 	<h1>jQuery</h1>
 
 	<div class="peppermint jquery-test">
-		<figure>
-			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+		<div class="slides-container slides">
+			<figure>
+				<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+				<figcaption>cat!</figcaption>
+			</figure>
 
-		<figure>
-			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+			<figure>
+				<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+				<figcaption>cat!</figcaption>
+			</figure>
 
-		<figure>
-			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+			<figure>
+				<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-			<figcaption>it's a cat!</figcaption>
-		</figure>
+				<figcaption>it's a cat!</figcaption>
+			</figure>
+		</div>
 	</div>
 
 	<h2>API test</h2>
@@ -185,6 +187,7 @@
 			addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
 			$('.jquery-test').Peppermint({
+				slidesContainer: $('.slides-container')[0],
 				dots: true,
 				slideshow: true,
 				mouseDrag: true,

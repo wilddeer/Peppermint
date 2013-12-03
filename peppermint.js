@@ -6,7 +6,22 @@
  * MIT License
  */
 function Peppermint(_this, options) {
-	var o = options || {};
+	var o = options || {},
+		slider = {
+			slides: [],
+			dots: [],
+			left: 0
+		},
+		slidesNumber,
+		flickThreshold = 200, // Maximum time in ms for flicks
+		activeSlide,
+		slideWidth,
+		dotBlock,
+		slidesTarget = o.slidesContainer || false,
+		slideBlock,
+		slideshowTimeoutId,
+		slideshowActive,
+		animationTimer;
 
 	o.speed = o.speed || 300; // transition between slides in ms
 	o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
@@ -18,28 +33,16 @@ function Peppermint(_this, options) {
 	o.dotsFirst = o.dotsFirst || false;
 	o.mouseDrag = o.mouseDrag || false;
 	o.cssPrefix = o.cssPrefix || '';
+	o.slidesContainer = o.slidesContainer || _this;
 
 	var classes = {
 		inactive: o.cssPrefix + 'inactive',
 		active: o.cssPrefix + 'active',
 		mouse: o.cssPrefix + 'mouse',
-		drag: o.cssPrefix + 'drag'
+		drag: o.cssPrefix + 'drag',
+		slides: o.cssPrefix + 'slides',
+		dots: o.cssPrefix + 'dots'
 	}
-	
-	var slider = {
-			slides: [],
-			dots: [],
-			left: 0
-		},
-		slidesNumber,
-		flickThreshold = 200, // Maximum time in ms for flicks
-		activeSlide,
-		slideWidth,
-		dotBlock,
-		slideBlock,
-		slideshowTimeoutId,
-		slideshowActive,
-		animationTimer;
 
 	// feature detects
 	var support = {
@@ -64,7 +67,9 @@ function Peppermint(_this, options) {
 	}
 
 	function addClass(el, cl) {
-		el.className = (el.className + ' ' + cl).replace(/^\s+|\s+$/g, '');
+		if ((' ' + el.className + ' ').indexOf(' ' + cl + ' ') === -1) {
+			el.className = (el.className + ' ' + cl).replace(/^\s+|\s+$/g, '');
+		}
 	}
 
 	function removeClass(el, cl) {
@@ -430,12 +435,12 @@ function Peppermint(_this, options) {
 		if (!support.transforms || !!window.opera) setPos = setPosFallback;
 		if (!support.transitions) changePos = changePosFallback;
 
-		slideBlock = document.createElement('div');
-		slideBlock.className = 'slides';
+		slideBlock = slidesTarget || document.createElement('div');
+		addClass(slideBlock, classes.slides);
 
 		//get slides & generate dots
-		for (var i = 0, l = _this.children.length; i < l; i++) {
-			var slide = _this.children[i],
+		for (var i = 0, l = o.slidesContainer.children.length; i < l; i++) {
+			var slide = o.slidesContainer.children[i],
 				dot = document.createElement('li');
 
 			slider.slides.push(slide);
@@ -497,19 +502,19 @@ function Peppermint(_this, options) {
 		
 		slider.width = _this.offsetWidth;
 
-		//have to do this in `px` because of webkit's rounding errors :-(
+		//had to do this in `px` because of webkit's rounding errors :-(
 		slideBlock.style.width = slider.width*slidesNumber+'px';
 		for (var i = 0; i < slidesNumber; i++) {
 			slider.slides[i].style.width = slider.width+'px';
 			slideBlock.appendChild(slider.slides[i]);
 		}
 
-		_this.appendChild(slideBlock);
+		if (!slidesTarget) _this.appendChild(slideBlock);
 
 		//append dots
 		if (o.dots) {
 			dotBlock = document.createElement('ul');
-			dotBlock.className = 'dots';
+			addClass(dotBlock, classes.dots);
 
 			for (var i = 0, l = slider.dots.length; i < l; i++) {
 				dotBlock.appendChild(slider.dots[i]);
