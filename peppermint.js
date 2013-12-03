@@ -20,6 +20,7 @@ function Peppermint(_this, options) {
 	o.cssPrefix = o.cssPrefix || '';
 
 	var classes = {
+		inactive: o.cssPrefix + 'inactive',
 		active: o.cssPrefix + 'active',
 		mouse: o.cssPrefix + 'mouse',
 		drag: o.cssPrefix + 'drag'
@@ -67,7 +68,7 @@ function Peppermint(_this, options) {
 	}
 
 	function removeClass(el, cl) {
-		el.className = (' ' + el.className + ' ').replace(' ' + cl + ' ', '').replace(/^\s+|\s+$/g, '');
+		el.className = (' ' + el.className + ' ').replace(' ' + cl + ' ', ' ').replace(/^\s+|\s+$/g, '');
 	}
 
 	//n - slide number (starting from 0)
@@ -491,6 +492,7 @@ function Peppermint(_this, options) {
 		slideWidth = 100/slidesNumber;
 
 		addClass(_this, classes.active);
+		removeClass(_this, classes.inactive);
 		o.mouseDrag && addClass(_this, classes.mouse);
 		
 		slider.width = _this.offsetWidth;
