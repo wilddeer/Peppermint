@@ -1,10 +1,12 @@
 .peppermint.active {
+	position: relative;
 	overflow: hidden;
 	padding-left: 0;
 	padding-right: 0;
 }
 
 .peppermint.active .slides {
+	position: relative;
 	overflow: hidden; /* clearfix */
 	-ms-touch-action: pan-y;
 	touch-action: pan-y;
