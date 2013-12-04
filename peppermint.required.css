@@ -1,21 +1,11 @@
 .peppermint.active {
-	position: relative;
 	overflow: hidden;
 	padding-left: 0;
 	padding-right: 0;
 }
 
-.peppermint.active .captions {
-	font-size: 0.9rem;
-	margin-bottom: 0.5rem;
-	text-align: center;
-	display: none;
-}
-
 .peppermint.active .slides {
-	z-index: 0;
-	position: relative;
-	overflow: hidden;
+	overflow: hidden; /* clearfix */
 	-ms-touch-action: pan-y;
 	touch-action: pan-y;
 }
@@ -27,6 +17,7 @@
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
 }
 
 .peppermint.active .slides a:active,
