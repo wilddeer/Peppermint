@@ -39,8 +39,6 @@ function Peppermint(_this, options) {
 
 	// feature detects
 	var support = {
-		pointerEvents: !!window.navigator.pointerEnabled,
-		msPointerEvents: !!window.navigator.msPointerEnabled,
 		transforms: testProp('transform'),
 		transitions: testProp('transition')
 	}
