@@ -218,175 +218,6 @@ function Peppermint(_this, options) {
 		slideshowActive = false;
 		slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
 	}
-
-	//inits touch events
-	function touchInit() {
-		var start = {},
-			diff = {},
-			isScrolling,
-			eventType,
-			clicksAllowed = true, //flag allowing default click actions (e.g. links)
-			eventModel = (support.pointerEvents? 1 : (support.msPointerEvents? 2 : 0)),
-			events = [
-				['touchstart', 'touchmove', 'touchend', 'touchcancel'], //touch events
-				['pointerdown', 'pointermove', 'pointerup', 'pointercancel'], //pointer events
-				['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'], //IE10 pointer events
-				['mousedown', 'mousemove', 'mouseup', false] //mouse events
-			],
-			//some checks for different types of events
-			checks = [
-				//touch events
-				function(e) {
-					//if it's multitouch or pinch move -- skip the event
-					return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
-				},
-				//pointer events
-				function(e) {
-					//if event is not primary (other pointers during multitouch),
-					//if left mouse button is not pressed,
-					//if mouse drag is disabled and event is not touch -- skip it!
-					return !e.isPrimary || e.buttons !== 1 || (!o.mouseDrag && e.pointerType !== 'touch' && e.pointerType !== 'pen');
-				},
-				//IE10 pointer events
-				function(e) {
-					//same checks as in pointer events
-					return !e.isPrimary || (e.buttons && e.buttons !== 1) || (!o.mouseDrag && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
-				},
-				//mouse events
-				function(e) {
-					//if left mouse button is not pressed -- skip the event
-					//in IE7-8 `buttons` is not defined, in IE9 LMB is 0
-					return (e.buttons && e.buttons !== 1);
-				}
-			];
-
-		function tStart(event, eType) {
-			clicksAllowed = true;
-			eventType = eType; //leak event type
-
-			if (checks[eventType](event)) return;
-
-			//add event listeners to the document, so that the slider
-			//will continue to recieve events wherever the pointer is
-			addEvent(document, events[eventType][1], tMove);
-			addEvent(document, events[eventType][2], tEnd);
-			addEvent(document, events[eventType][3], tEnd);
-
-			//fixes WebKit's cursor while dragging
-			if (eventType) event.preventDefault? event.preventDefault() : event.returnValue = false;
-
-			//remember starting time and position
-			start = {
-				x: eventType? event.clientX : event.touches[0].clientX,
-				y: eventType? event.clientY : event.touches[0].clientY,
-
-				time: +new Date
-			};
-			
-			//firefox doesn't want apply the cursor from `:active` CSS rule, have to add a class :-/
-			addClass(_this, classes.drag);
-
-			//reset
-			isScrolling = undefined;
-			diff = {};
-		}
-
-		function tMove(event) {
-			//if user is trying to scroll vertically -- do nothing
-			if (isScrolling || checks[eventType](event)) return;
-
-			diff.x = (eventType? event.clientX : event.touches[0].clientX) - start.x;
-
-			if (diff.x) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
-
-			//check whether the user is trying to scroll vertically
-			if (eventType !== 3 && isScrolling === undefined) {
-				//`diff.y` is only required for this check
-				diff.y = (eventType? event.clientY : event.touches[0].clientY) - start.y;
-				//assign and check `isScrolling` at the same time
-				if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y))) return;
-			}
-
-			event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
-			pauseSlideshow(); //pause the slideshow when touch is in progress
-
-			//if it's first slide and moving left or last slide and moving right -- resist!
-			diff.x = 
-			diff.x / 
-				(
-					(!activeSlide && diff.x > 0
-					|| activeSlide == slidesNumber - 1 && diff.x < 0)
-					?                      
-					(Math.abs(diff.x)/slider.width*2 + 1)
-					:
-					1
-				);
-			
-			//change the position of the slider appropriately
-			changePos(diff.x - slider.width*activeSlide);
-		}
-
-		function tEnd(event) {
-			//IE likes to focus the link after touchend.
-			//Since we dont' want to disable the outline completely for accessibility reasons,
-			//we just defocus it after touch and disable the outline for `:active` links in css.
-			//This way the outline will remain visible when tabbing through the links.
-			event.target && event.target.blur && event.target.blur();
-
-			if (diff.x) {
-				var duration = Number(+new Date - start.time), //duration of the touch move
-					ratio = Math.abs(diff.x)/slider.width,
-					//How many slides to skip. Remainder > 0.25 counts for one slide.
-					skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
-					//Super duper formula to detect a flick.
-					//First, it's got to be fast enough.
-					//Second, if `skip==0`, 20px move is enough to switch to the next slide.
-					//If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
-					flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
-
-				skip += (flick?1:0);
-
-				if (diff.x < 0) {
-					changeActiveSlide(activeSlide+skip, o.touchSpeed);
-				}
-				else {
-					changeActiveSlide(activeSlide-skip, o.touchSpeed);	
-				}
-
-				o.stopSlideshowAfterInteraction && stopSlideshow();
-			}
-
-			//remove the drag class
-			removeClass(_this, classes.drag);
-
-			//remove the event listeners
-			detachEvents();
-		}
-
-		//removes the event listeners from the document
-		function detachEvents() {
-			removeEvent(document, events[eventType][1], tMove);
-			removeEvent(document, events[eventType][2], tEnd);
-			removeEvent(document, events[eventType][3], tEnd);
-		}
-
-		//bind the touchstart
-		addEvent(slideBlock, events[eventModel][0], function(e) {tStart(e, eventModel);});
-		//prevent stuff from dragging when using mouse
-		addEvent(slideBlock, 'dragstart', function(e){
-			event.preventDefault? event.preventDefault() : event.returnValue = false;
-		});
-
-		//bind mousedown if necessary
-		if (o.mouseDrag && !eventModel) {
-			addEvent(slideBlock, events[3][0], function(e) {tStart(e, 3);});
-		}
-
-		//No clicking during touch
-		addEvent(slideBlock, 'click', function(event) {
-			clicksAllowed || (event.preventDefault? event.preventDefault() : event.returnValue = false);
-		});
-	}
 	
 	//this should be invoked when the width of the slider is changed
 	function onWidthChange() {
@@ -403,23 +234,68 @@ function Peppermint(_this, options) {
 	function addEvent(el, event, func, bool) {
 		if (!event) return;
 
-		if (el.addEventListener) {
-			el.addEventListener(event, func, !!bool);
-		}
-		else {
-			el.attachEvent('on'+event, func);
-		}
+		el.addEventListener? el.addEventListener(event, func, !!bool): el.attachEvent('on'+event, func);
 	}
 
 	function removeEvent(el, event, func, bool) {
 		if (!event) return;
 
-		if (el.removeEventListener) {
-			el.removeEventListener(event, func, !!bool);
-		}
-		else {
-			el.detachEvent('on'+event, func);
-		}
+		el.removeEventListener? el.removeEventListener(event, func, !!bool): el.detachEvent('on'+event, func);
+	}
+
+	//init touch events
+	function touchInit() {
+		eventBurrito(slideBlock, {
+			start: function(event, start) {
+				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
+				addClass(_this, classes.drag);
+			},
+			move: function(event, start, diff) {
+				pauseSlideshow(); //pause the slideshow when touch is in progress
+
+				//if it's first slide and moving left or last slide and moving right -- resist!
+				diff.x = 
+				diff.x / 
+					(
+						(!activeSlide && diff.x > 0
+						|| activeSlide == slidesNumber - 1 && diff.x < 0)
+						?                      
+						(Math.abs(diff.x)/slider.width*2 + 1)
+						:
+						1
+					);
+				
+				//change the position of the slider appropriately
+				changePos(diff.x - slider.width*activeSlide);
+			},
+			end: function(event, start, diff) {
+				if (diff.x) {
+					var duration = Number(+new Date - start.time), //duration of the touch move
+						ratio = Math.abs(diff.x)/slider.width,
+						//How many slides to skip. Remainder > 0.25 counts for one slide.
+						skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
+						//Super duper formula to detect a flick.
+						//First, it's got to be fast enough.
+						//Second, if `skip==0`, 20px move is enough to switch to the next slide.
+						//If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
+						flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
+
+					skip += (flick?1:0);
+
+					if (diff.x < 0) {
+						changeActiveSlide(activeSlide+skip, o.touchSpeed);
+					}
+					else {
+						changeActiveSlide(activeSlide-skip, o.touchSpeed);	
+					}
+
+					o.stopSlideshowAfterInteraction && stopSlideshow();
+				}
+
+				//remove the drag class
+				removeClass(_this, classes.drag);
+			}
+		});
 	}
 
 	function setup() {
@@ -533,6 +409,8 @@ function Peppermint(_this, options) {
 		//init slideshow
 		if (o.slideshow) startSlideshow();
 
+		touchInit();
+
 		//API callback, timeout to expose the API first
 		setTimeout(function() {
 			o.onSetup && o.onSetup(slidesNumber);
@@ -541,7 +419,6 @@ function Peppermint(_this, options) {
 
 	//Init
 	setup();
-	touchInit();
 
 	//expose the API
 	return {

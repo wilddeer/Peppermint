@@ -14,7 +14,12 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-					'peppermint.min.js': ['src/peppermint.js']
+					'peppermint.min.js': ['src/peppermint.js','src/eventburrito.js']
+				}
+			},
+			pure: {
+				files: {
+					'pure/peppermint.pure.min.js': ['src/peppermint.js']
 				}
 			}
 		},
@@ -23,14 +28,18 @@ module.exports = function(grunt) {
 				banner: '<%= banner %>'
 			},
 			dist: {
-				src: ['src/peppermint.js'],
+				src: ['src/peppermint.js','src/eventburrito.js'],
 				dest: 'peppermint.js',
 			},
+			pure: {
+				src: ['src/peppermint.js'],
+				dest: 'pure/peppermint.pure.js'
+			}
 		},
 
 		watch: {
 			files: ['src/*.js', 'package.json'],
-			tasks: ['build'],
+			tasks: ['build']
 		},
 	});
 
