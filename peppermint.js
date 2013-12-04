@@ -42,13 +42,13 @@ function Peppermint(_this, options) {
 		drag: o.cssPrefix + 'drag',
 		slides: o.cssPrefix + 'slides',
 		dots: o.cssPrefix + 'dots'
-	}
+	};
 
 	// feature detects
 	var support = {
 		transforms: testProp('transform'),
 		transitions: testProp('transition')
-	}
+	};
 
 	function testProp(prop) {
 		var prefixes = ['Webkit', 'Moz', 'O', 'ms'],
@@ -327,10 +327,10 @@ function Peppermint(_this, options) {
 
 			//bind events to dots
 			addEvent(dot, 'click', (function(x, b) {
-				return function() {
+				return function(event) {
 					//Don't want to disable outlines completely for accessibility reasons,
 					//so I just defocus the dot on click & set `outline: none` for `:active` in css.
-					b.blur();
+					if (event.clientX !== 0 && event.clientY !== 0 && event.offsetX !== 0 && event.offsetY !== 0) b.blur();
 					changeActiveSlide(x);
 					o.stopSlideshowAfterInteraction && stopSlideshow();
 				};
