@@ -525,21 +525,23 @@ function Peppermint(_this, options) {
 		addEvent(window, 'resize', onWidthChange);
 		addEvent(window, 'orientationchange', onWidthChange);
 
-		//init first slide
-		changeActiveSlide(o.startSlide, 0);
+		//init first slide, timeout to expose the API first
+		setTimeout(function() {
+			changeActiveSlide(o.startSlide, 0);
+		}, 0);
 
 		//init slideshow
 		if (o.slideshow) startSlideshow();
 
-		//API callback
-		o.onSetup && o.onSetup(slidesNumber);
+		//API callback, timeout to expose the API first
+		setTimeout(function() {
+			o.onSetup && o.onSetup(slidesNumber);
+		}, 0);
 	}
 
-	//Init. Timeout to expose the API first.
-	setTimeout(function() {
-		setup();
-		touchInit();
-	}, 0);
+	//Init
+	setup();
+	touchInit();
 
 	//expose the API
 	return {
