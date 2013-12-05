@@ -245,6 +245,7 @@ function Peppermint(_this, options) {
 	//init touch events
 	function touchInit() {
 		eventBurrito(slideBlock, {
+			mouse: o.mouseDrag,
 			start: function(event, start) {
 				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
 				addClass(_this, classes.drag);
@@ -619,7 +620,7 @@ function eventBurrito(_this, options) {
 	}
 
 	function tEnd(event) {
-		getDiff(event);
+		eventType && getDiff(event);
 
 		//console.log(speed.x);
 
@@ -650,7 +651,7 @@ function eventBurrito(_this, options) {
 	});
 
 	//bind mousedown if necessary
-	if (!eventModel) {
+	if (o.mouse && !eventModel) {
 		addEvent(_this, events[3][0], function(e) {tStart(e, 3);});
 	}
 

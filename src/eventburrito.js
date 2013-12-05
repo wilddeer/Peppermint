@@ -143,7 +143,7 @@ function eventBurrito(_this, options) {
 	}
 
 	function tEnd(event) {
-		getDiff(event);
+		eventType && getDiff(event);
 
 		//console.log(speed.x);
 
@@ -174,7 +174,7 @@ function eventBurrito(_this, options) {
 	});
 
 	//bind mousedown if necessary
-	if (!eventModel) {
+	if (o.mouse && !eventModel) {
 		addEvent(_this, events[3][0], function(e) {tStart(e, 3);});
 	}
 

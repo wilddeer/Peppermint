@@ -238,6 +238,7 @@ function Peppermint(_this, options) {
 	//init touch events
 	function touchInit() {
 		eventBurrito(slideBlock, {
+			mouse: o.mouseDrag,
 			start: function(event, start) {
 				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
 				addClass(_this, classes.drag);
