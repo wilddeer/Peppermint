@@ -242,7 +242,7 @@ function Peppermint(_this, options) {
 				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
 				addClass(_this, classes.drag);
 			},
-			move: function(event, start, diff) {
+			move: function(event, start, diff, speed) {
 				pauseSlideshow(); //pause the slideshow when touch is in progress
 
 				//if it's first slide and moving left or last slide and moving right -- resist!
@@ -260,7 +260,7 @@ function Peppermint(_this, options) {
 				//change the position of the slider appropriately
 				changePos(diff.x - slider.width*activeSlide);
 			},
-			end: function(event, start, diff) {
+			end: function(event, start, diff, speed) {
 				if (diff.x) {
 					var ratio = Math.abs(diff.x)/slider.width,
 						//How many slides to skip. Remainder > 0.25 counts for one slide.

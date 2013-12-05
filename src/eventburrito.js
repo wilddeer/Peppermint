@@ -16,8 +16,8 @@ function eventBurrito(_this, options) {
 		},
 		start = {},
 		diff = {},
-		last = {},
 		speed = {},
+		stack = [],
 		isScrolling,
 		eventType,
 		clicksAllowed = true, //flag allowing default click actions (e.g. links)
@@ -92,7 +92,9 @@ function eventBurrito(_this, options) {
 
 		//reset
 		isScrolling = undefined;
-		diff = last = speed = {x:0, y:0};
+		diff = {x:0, y:0, time: 0};
+		speed = {x:0, y:0};
+		stack = [{x:0, y:0, time: 0}];
 
 		o.start(event, start);
 	}
@@ -101,8 +103,6 @@ function eventBurrito(_this, options) {
 		//if user is trying to scroll vertically -- do nothing
 		if ((!o.preventScroll && isScrolling) || checks[eventType](event)) return;
 
-		last = diff;
-
 		diff = {
 			x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
 			y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
@@ -110,9 +110,11 @@ function eventBurrito(_this, options) {
 			time: Number(new Date) - start.time
 		};
 
-		speed = {
-			x: (diff.x - last.x) / (diff.time - last.time),
-			y: (diff.y - last.y) / (diff.time - last.time)
+		if (diff.time - stack[0].time) {
+			speed = {
+				x: (diff.x - stack[0].x) / (diff.time - stack[0].time),
+				y: (diff.y - stack[0].y) / (diff.time - stack[0].time)
+			}
 		}
 
 		if (diff.x || diff.y) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
@@ -125,6 +127,9 @@ function eventBurrito(_this, options) {
 
 		event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
 		
+		if (stack.length >= 5) stack.shift();
+		stack.push({x: diff.x, y: diff.y, time: diff.time});
+
 		o.move(event, start, diff, speed);
 	}
 
