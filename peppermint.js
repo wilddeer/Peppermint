@@ -543,6 +543,27 @@ function eventBurrito(_this, options) {
 		el.removeEventListener? el.removeEventListener(event, func, !!bool): el.detachEvent('on'+event, func);
 	}
 
+	function getDiff(event) {
+		diff = {
+			x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
+			y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
+
+			time: Number(new Date) - start.time
+		};
+
+		if (diff.time - stack[stack.length - 1].time) {
+			for (var i = 0; i < stack.length - 1 && diff.time - stack[i].time > 80; i++);
+
+			speed = {
+				x: (diff.x - stack[i].x) / (diff.time - stack[i].time),
+				y: (diff.y - stack[i].y) / (diff.time - stack[i].time)
+			};
+
+			if (stack.length >= 5) stack.shift();
+			stack.push({x: diff.x, y: diff.y, time: diff.time});
+		}
+	}
+
 	function tStart(event, eType) {
 		clicksAllowed = true;
 		eventType = eType; //leak event type
@@ -579,19 +600,9 @@ function eventBurrito(_this, options) {
 		//if user is trying to scroll vertically -- do nothing
 		if ((!o.preventScroll && isScrolling) || checks[eventType](event)) return;
 
-		diff = {
-			x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
-			y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
+		getDiff(event);
 
-			time: Number(new Date) - start.time
-		};
-
-		if (diff.time - stack[0].time) {
-			speed = {
-				x: (diff.x - stack[0].x) / (diff.time - stack[0].time),
-				y: (diff.y - stack[0].y) / (diff.time - stack[0].time)
-			}
-		}
+		//console.log(speed.x);
 
 		if (diff.x || diff.y) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
 
@@ -602,14 +613,15 @@ function eventBurrito(_this, options) {
 		}
 
 		event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
-		
-		if (stack.length >= 5) stack.shift();
-		stack.push({x: diff.x, y: diff.y, time: diff.time});
 
 		o.move(event, start, diff, speed);
 	}
 
 	function tEnd(event) {
+		getDiff(event);
+
+		//console.log(speed.x);
+
 		//IE likes to focus the link after touchend.
 		//Since we dont' want to disable the outline completely for accessibility reasons,
 		//we just defocus it after touch and disable the outline for `:active` links in css.
