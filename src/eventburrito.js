@@ -16,6 +16,8 @@ function eventBurrito(_this, options) {
 		},
 		start = {},
 		diff = {},
+		last = {},
+		speed = {},
 		isScrolling,
 		eventType,
 		clicksAllowed = true, //flag allowing default click actions (e.g. links)
@@ -85,12 +87,12 @@ function eventBurrito(_this, options) {
 			x: eventType? event.clientX : event.touches[0].clientX,
 			y: eventType? event.clientY : event.touches[0].clientY,
 
-			time: +new Date
+			time: Number(new Date)
 		};
 
 		//reset
 		isScrolling = undefined;
-		diff = {};
+		diff = last = speed = {x:0, y:0};
 
 		o.start(event, start);
 	}
@@ -99,10 +101,19 @@ function eventBurrito(_this, options) {
 		//if user is trying to scroll vertically -- do nothing
 		if ((!o.preventScroll && isScrolling) || checks[eventType](event)) return;
 
+		last = diff;
+
 		diff = {
 			x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
-			y: (eventType? event.clientY : event.touches[0].clientY) - start.y
+			y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
+
+			time: Number(new Date) - start.time
 		};
+
+		speed = {
+			x: (diff.x - last.x) / (diff.time - last.time),
+			y: (diff.y - last.y) / (diff.time - last.time)
+		}
 
 		if (diff.x || diff.y) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
 
@@ -114,7 +125,7 @@ function eventBurrito(_this, options) {
 
 		event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
 		
-		o.move(event, start, diff);
+		o.move(event, start, diff, speed);
 	}
 
 	function tEnd(event) {
@@ -127,7 +138,7 @@ function eventBurrito(_this, options) {
 		//remove the event listeners
 		detachEvents();
 
-		o.end(event, start, diff);
+		o.end(event, start, diff, speed);
 	}
 
 	//removes the event listeners from the document

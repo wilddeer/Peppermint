@@ -262,15 +262,14 @@ function Peppermint(_this, options) {
 			},
 			end: function(event, start, diff) {
 				if (diff.x) {
-					var duration = Number(+new Date - start.time), //duration of the touch move
-						ratio = Math.abs(diff.x)/slider.width,
+					var ratio = Math.abs(diff.x)/slider.width,
 						//How many slides to skip. Remainder > 0.25 counts for one slide.
 						skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
 						//Super duper formula to detect a flick.
 						//First, it's got to be fast enough.
 						//Second, if `skip==0`, 20px move is enough to switch to the next slide.
 						//If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
-						flick = duration < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
+						flick = diff.time < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
 
 					skip += (flick?1:0);
 
