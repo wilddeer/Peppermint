@@ -475,8 +475,6 @@ if (window.jQuery) {
 		};
 	})(window.jQuery);
 }
-
-
 function eventBurrito(_this, options) {
 
 	var o = options || {},
@@ -630,6 +628,12 @@ function eventBurrito(_this, options) {
 
 	//No clicking during touch
 	addEvent(_this, 'click', function(event) {
-		clicksAllowed || (event.preventDefault? event.preventDefault() : event.returnValue = false);
+		clicksAllowed? o.click(event): (event.preventDefault? event.preventDefault() : event.returnValue = false);
 	});
+
+	return {
+		getClicksAllowed: function() {
+			return clicksAllowed;
+		}
+	}
 }
