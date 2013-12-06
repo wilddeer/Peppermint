@@ -1,0 +1,3 @@
+[submodule "src/burrito"]
+	path = src/burrito
+	url = https://github.com/wilddeer/Event-Burrito.git

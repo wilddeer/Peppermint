@@ -7,33 +7,43 @@ module.exports = function(grunt) {
 		banner: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * MIT License\n */\n',
 		uglify: {
 			options: {
-				banner: '<%= banner %>',
+				preserveComments: 'some',
 				mangle: {
-					except: ['Peppermint', '$', 'jQuery']
+					except: ['Peppermint', '$', 'jQuery', 'eventBurrito']
 				}
 			},
-			dist: {
+			peppermint: {
 				files: {
-					'peppermint.min.js': ['src/peppermint.js','src/eventburrito.js']
+					'temp/peppermint.min.js': ['src/peppermint.js']
 				}
 			},
-			pure: {
+			burrito: {
 				files: {
-					'pure/peppermint.pure.min.js': ['src/peppermint.js']
+					'temp/eventburrito.min.js': ['src/burrito/eventburrito.js']
 				}
 			}
 		},
+
 		concat: {
 			options: {
-				banner: '<%= banner %>'
+				banner: '<%= banner %>',
+				separator: '\n'
 			},
-			dist: {
-				src: ['src/peppermint.js','src/eventburrito.js'],
+			full: {
+				src: ['src/peppermint.js','src/burrito/eventburrito.js'],
 				dest: 'peppermint.js',
 			},
-			pure: {
+			min: {
+				src: ['temp/peppermint.min.js','temp/eventburrito.min.js'],
+				dest: 'peppermint.min.js',
+			},
+			pureFull: {
 				src: ['src/peppermint.js'],
 				dest: 'pure/peppermint.pure.js'
+			},
+			pureMin: {
+				src: ['temp/peppermint.min.js'],
+				dest: 'pure/peppermint.pure.min.js'
 			}
 		},
 

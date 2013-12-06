@@ -475,6 +475,13 @@ if (window.jQuery) {
 		};
 	})(window.jQuery);
 }
+/*!
+ * Event Burrito is a touch / mouse / pointer event unifier
+ * https://github.com/wilddeer/Event-Burrito
+ * Copyright Oleg Korsunsky | http://wd.dizaina.net/
+ *
+ * MIT License
+ */
 function eventBurrito(_this, options) {
 
 	var o = options || {},
@@ -604,8 +611,6 @@ function eventBurrito(_this, options) {
 
 		getDiff(event);
 
-		//console.log(speed.x);
-
 		if (Math.abs(diff.x) > o.clickTolerance || Math.abs(diff.y) > o.clickTolerance) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
 
 		//check whether the user is trying to scroll vertically
@@ -621,8 +626,6 @@ function eventBurrito(_this, options) {
 
 	function tEnd(event) {
 		eventType && getDiff(event);
-
-		//console.log(speed.x);
 
 		//IE likes to focus the link after touchend.
 		//Since we dont' want to disable the outline completely for accessibility reasons,
