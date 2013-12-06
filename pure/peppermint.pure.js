@@ -3,6 +3,7 @@
  * v. 1.1.1 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
+ * Requires Event Burrito | https://github.com/wilddeer/Event-Burrito
  * MIT License
  */
 function Peppermint(_this, options) {
@@ -244,7 +245,7 @@ function Peppermint(_this, options) {
 
 	//init touch events
 	function touchInit() {
-		eventBurrito(slideBlock, {
+		EventBurrito(slideBlock, {
 			mouse: o.mouseDrag,
 			start: function(event, start) {
 				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/

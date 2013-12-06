@@ -4,12 +4,12 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		banner: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * MIT License\n */\n',
+		banner: '/*!\n * Peppermint touch slider + Event Burrito\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * MIT License\n */\n',
+		bannerPure: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * Requires Event Burrito | https://github.com/wilddeer/Event-Burrito\n * MIT License\n */\n',
 		uglify: {
 			options: {
-				preserveComments: 'some',
 				mangle: {
-					except: ['Peppermint', '$', 'jQuery', 'eventBurrito']
+					except: ['Peppermint', '$', 'jQuery', 'EventBurrito']
 				}
 			},
 			peppermint: {
@@ -38,10 +38,16 @@ module.exports = function(grunt) {
 				dest: 'peppermint.min.js',
 			},
 			pureFull: {
+				options: {
+					banner: '<%= bannerPure %>'
+				},
 				src: ['src/peppermint.js'],
 				dest: 'pure/peppermint.pure.js'
 			},
 			pureMin: {
+				options: {
+					banner: '<%= bannerPure %>'
+				},
 				src: ['temp/peppermint.min.js'],
 				dest: 'pure/peppermint.pure.min.js'
 			}

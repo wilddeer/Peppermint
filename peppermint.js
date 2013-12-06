@@ -1,5 +1,5 @@
 /*!
- * Peppermint touch slider
+ * Peppermint touch slider + Event Burrito
  * v. 1.1.1 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
@@ -244,7 +244,7 @@ function Peppermint(_this, options) {
 
 	//init touch events
 	function touchInit() {
-		eventBurrito(slideBlock, {
+		EventBurrito(slideBlock, {
 			mouse: o.mouseDrag,
 			start: function(event, start) {
 				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
@@ -482,14 +482,14 @@ if (window.jQuery) {
  *
  * MIT License
  */
-function eventBurrito(_this, options) {
+function EventBurrito(_this, options) {
 
 	var o = options || {},
 		noop = function() {};
 
 	o.clickTolerance = o.clickTolerance || 0;
 	o.preventScroll = o.preventScroll || false;
-	o.mouse = o.mouse || true;
+	o.mouse = (o.mouse === undefined?true:o.mouse);
 	o.start = o.start || noop;
 	o.move = o.move || noop;
 	o.end = o.end || noop;
