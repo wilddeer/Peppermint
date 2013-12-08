@@ -84,16 +84,14 @@ function Peppermint(_this, options) {
 			n = slidesNumber-1;
 		}
 		
-		if (n !== activeSlide) {
-			//change active dot
-			for (var i = slider.dots.length - 1; i >= 0; i--) {
-				removeClass(slider.dots[i], classes.active);
-			}
-
-			addClass(slider.dots[n], classes.active);
-
-			activeSlide = n;
+		//change active dot
+		for (var i = slider.dots.length - 1; i >= 0; i--) {
+			removeClass(slider.dots[i], classes.active);
 		}
+
+		addClass(slider.dots[n], classes.active);
+
+		activeSlide = n;
 
 		changePos(-n*slider.width, (speed===undefined?o.speed:speed));
 
