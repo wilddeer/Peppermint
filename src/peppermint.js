@@ -7,7 +7,7 @@ function Peppermint(_this, options) {
 		},
 		slidesNumber,
 		flickThreshold = 200, // Maximum time in ms for flicks
-		activeSlide,
+		activeSlide = 0,
 		slideWidth,
 		dotBlock,
 		slidesTarget = o.slidesContainer || false,
