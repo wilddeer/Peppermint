@@ -9,22 +9,22 @@ Yet another touch slider. Only better.
 - IE7+ compatible
 - Library agnostic. If jQuery is available, registers itself as a plugin.
 - Uses CSS3 transforms &amp; animations, falls back to timer animations when necessary
-- Only 6 Kb minified
+- Only 7.5 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
 - [Doesn't break](http://wd.dizaina.net/en/internet-maintenance/js-sliders-and-the-tab-key/) when <kbd>tab</kbd>&rsquo;bing
 
 ##Kit
 
-- **peppermint.min.js** -- minified production script
-- **peppermint.required.css** -- styles required for proper functioning
-- **peppermint.suggested.css** -- default styles to start with (required styles not included!)
+- **[peppermint.min.js](https://raw.github.com/wilddeer/Peppermint/master/peppermint.min.js)** -- minified production script
+- **[peppermint.required.css](https://raw.github.com/wilddeer/Peppermint/master/peppermint.required.css)** -- styles required for proper functioning
+- **[peppermint.suggested.css](https://raw.github.com/wilddeer/Peppermint/master/peppermint.suggested.css)** -- default styles to start with (required styles not included!)
 
 ##Usage
 
 HTML markup:
 
-	<div class="peppermint" id="peppermint">
+	<div class="peppermint inactive" id="peppermint">
 	  <figure> ... </figure>
 
 	  <figure> ... </figure>
@@ -39,6 +39,8 @@ Javascript:
 Or javascript + jQuery:
 
 	$('.peppermint').Peppermint();
+	
+`inactive` class is not required. It is replaced with `active` during setup.
 
 You are free to use any other tag instead of `figure`. When using `figure`, don't forget to include [html5shiv](https://github.com/aFarkas/html5shiv), otherwise it won't work in old IEs.
 
@@ -77,7 +79,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 	  mouseDrag: false,
 
 	  //Prefix to be used with peppermint classes,
-	  //such as `active`, `mouse` and `drag`.
+	  //such as `inactive`, `active`, `mouse` and `drag`.
 	  //Don't forget to change the stylesheet appropriately!
 	  cssPrefix: '',
 	
