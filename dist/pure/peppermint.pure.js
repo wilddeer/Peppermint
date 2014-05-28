@@ -3,7 +3,7 @@
  * v. 1.2.0 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
- * Requires Event Burrito | https://github.com/wilddeer/Event-Burrito
+ * Depends on Event Burrito | https://github.com/wilddeer/Event-Burrito
  * MIT License
  */
 function Peppermint(_this, options) {
@@ -26,9 +26,9 @@ function Peppermint(_this, options) {
 
 	o.speed = o.speed || 300; // transition between slides in ms
 	o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
-	o.slideshow = o.slideshow || false; // launch the slideshow at start
+	o.slideshow = o.slideshow || false; // launch slideshow at start
 	o.slideshowInterval = o.slideshowInterval || 4000;
-	o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false; // stop the slideshow after the user interacts with the slider
+	o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false; // stop slideshow after user interaction
 	o.startSlide = o.startSlide || 0; // first slide to show
 	o.dots = o.dots || false; // show dots
 	o.dotsFirst = o.dotsFirst || false;
@@ -105,7 +105,7 @@ function Peppermint(_this, options) {
 		return n;
 	}
 
-	//changes the position of the slider (in px) with a given speed (in ms)
+	//changes position of the slider (in px) with given speed (in ms)
 	function changePos(pos, speed) {
 		var time = speed?speed+'ms':'';
 
@@ -118,7 +118,7 @@ function Peppermint(_this, options) {
 		setPos(pos);
 	}
 
-	//fallback to `setInterval` animation for UAs with no CSS transitions
+	//fallback to `setInterval` animations for UAs with no CSS transitions
 	function changePosFallback(pos, speed) {
 		animationTimer && clearInterval(animationTimer);
 
@@ -158,7 +158,7 @@ function Peppermint(_this, options) {
 	    }, 15);
 	}
 
-	//sets the position of the slider (in px)
+	//sets position of the slider (in px)
 	function setPos(pos) {
 		slideBlock.style.webkitTransform = 'translate('+pos+'px,0) translateZ(0)';
 		slideBlock.style.msTransform = 
@@ -201,7 +201,7 @@ function Peppermint(_this, options) {
 		stepSlideshow();
 	}
 
-	//sets or resets the timeout to the next slide
+	//sets or resets timeout before switching to the next slide
 	function stepSlideshow() {
 		if (slideshowActive) {
 			slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
@@ -213,7 +213,7 @@ function Peppermint(_this, options) {
 		}
 	}
 
-	//pauses the slideshow until `stepSlideshow` is invoked
+	//pauses slideshow until `stepSlideshow` is invoked
 	function pauseSlideshow() {
 		slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
 	}
@@ -246,7 +246,7 @@ function Peppermint(_this, options) {
 		EventBurrito(slideBlock, {
 			mouse: o.mouseDrag,
 			start: function(event, start) {
-				//firefox doesn't want to apply the cursor from `:active` CSS rule, have to add a class :-/
+				//firefox doesn't want to apply cursor from `:active` CSS rule, have to add a class :-/
 				addClass(_this, classes.drag);
 			},
 			move: function(event, start, diff, speed) {
@@ -264,7 +264,7 @@ function Peppermint(_this, options) {
 						1
 					);
 				
-				//change the position of the slider appropriately
+				//change position of the slider appropriately
 				changePos(diff.x - slider.width*activeSlide);
 			},
 			end: function(event, start, diff, speed) {
@@ -272,7 +272,7 @@ function Peppermint(_this, options) {
 					var ratio = Math.abs(diff.x)/slider.width,
 						//How many slides to skip. Remainder > 0.25 counts for one slide.
 						skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
-						//Super duper formula to detect a flick.
+						//Super-duper formula to detect a flick.
 						//First, it's got to be fast enough.
 						//Second, if `skip==0`, 20px move is enough to switch to the next slide.
 						//If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
@@ -297,8 +297,8 @@ function Peppermint(_this, options) {
 	}
 
 	function setup() {
-		//If the UA doesn't support css transforms or transitions -- use fallback functions.
-		//Separate functions instead of checks for better performance.
+		//If current UA doesn't support css transforms or transitions -- use fallback functions.
+		//(Using separate functions instead of checks for better performance)
 		if (!support.transforms || !!window.opera) setPos = setPosFallback;
 		if (!support.transitions || !!window.opera) changePos = changePosFallback;
 
@@ -329,7 +329,7 @@ function Peppermint(_this, options) {
 				};
 			})(i, dot));
 
-			//Bind the same function to Enter key, except for the `blur` part -- I dont't want
+			//Bind the same function to Enter key except for the `blur` part -- I dont't want
 			//the focus to be lost when the user is using his keyboard to navigate.
 			addEvent(dot, 'keyup', (function(x) {
 				return function(event) {
@@ -341,10 +341,10 @@ function Peppermint(_this, options) {
 			})(i));
 
 			//This solves tabbing problems:
-			//When an element inside the slide catches focus we switch to that slide
+			//When an element inside a slide catches focus we switch to that slide
 			//and reset `scrollLeft` of the slider block.
 			//`SetTimeout` solves Chrome's bug.
-			//Event capturing is used to catch the event on the slide level.
+			//Event capturing is used to catch events on the slide level.
 			//Since older IEs don't have capturing, `onfocusin` is used as a fallback.
 			addEvent(slide, 'focus', slide.onfocusin = (function(x) {
 				return function(e) {

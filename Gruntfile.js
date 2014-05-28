@@ -4,8 +4,8 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		banner: '/*!\n * Peppermint touch slider + Event Burrito\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * MIT License\n */\n',
-		bannerPure: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * Requires Event Burrito | https://github.com/wilddeer/Event-Burrito\n * MIT License\n */\n',
+		banner: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * Depends on Event Burrito (included) | https://github.com/wilddeer/Event-Burrito\n * MIT License\n */\n',
+		bannerPure: '/*!\n * Peppermint touch slider\n * v. <%= pkg.version %> | <%= pkg.homepage %>\n * Copyright <%= pkg.author.name %> | <%= pkg.author.url %>\n *\n * Depends on Event Burrito | https://github.com/wilddeer/Event-Burrito\n * MIT License\n */\n',
 		uglify: {
 			options: {
 				mangle: {
@@ -31,25 +31,40 @@ module.exports = function(grunt) {
 			},
 			full: {
 				src: ['src/peppermint.js','src/burrito/eventburrito.js'],
-				dest: 'peppermint.js',
+				dest: 'dist/peppermint.js',
 			},
 			min: {
 				src: ['temp/peppermint.min.js','temp/eventburrito.min.js'],
-				dest: 'peppermint.min.js',
+				dest: 'dist/peppermint.min.js',
 			},
 			pureFull: {
 				options: {
 					banner: '<%= bannerPure %>'
 				},
 				src: ['src/peppermint.js'],
-				dest: 'pure/peppermint.pure.js'
+				dest: 'dist/pure/peppermint.pure.js'
 			},
 			pureMin: {
 				options: {
 					banner: '<%= bannerPure %>'
 				},
 				src: ['temp/peppermint.min.js'],
-				dest: 'pure/peppermint.pure.min.js'
+				dest: 'dist/pure/peppermint.pure.min.js'
+			},
+			cssRequired: {
+				options: {
+					banner: '/* Peppermint minimal required styles */\n\n'
+				},
+				src: ['src/peppermint.required.css'],
+				dest: 'dist/peppermint.required.css'
+			},
+			cssSuggested: {
+				options: {
+					banner: '/* Peppermint required styles + default appearance styles */\n\n',
+					separator: '\n\n/* default appearance styles */\n'
+				},
+				src: ['src/peppermint.required.css', 'src/peppermint.appearance.css'],
+				dest: 'dist/peppermint.suggested.css'
 			}
 		},
 
