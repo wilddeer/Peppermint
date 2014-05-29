@@ -76,7 +76,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 	  dotsFirst: false,
 
 	  //use mouse to drag the slider
-	  mouseDrag: false,
+	  mouseDrag: true,
 
 	  //Prefix to be used with peppermint classes,
 	  //such as `inactive`, `active`, `mouse` and `drag`.

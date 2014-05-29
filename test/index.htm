@@ -1,232 +1,230 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="msapplication-tap-highlight" content="no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-tap-highlight" content="no">
 
-	<link rel="stylesheet" href="../src/peppermint.required.css">
-	<link rel="stylesheet" href="../src/peppermint.appearance.css">
+    <link rel="stylesheet" href="../src/peppermint.required.css">
+    <link rel="stylesheet" href="../src/peppermint.appearance.css">
 
-	<style>
-		figure,
-		figcaption,
-		section {
-			display: block;
-		}
+    <style>
+        figure,
+        figcaption,
+        section {
+            display: block;
+        }
 
-		a img {
-			border: 0;
-		}
+        a img {
+            border: 0;
+        }
 
-		#peppermint {
-			max-width: 700px;
-			margin: 0 auto;
-			border: 1px dashed #ddd;
-		}
-	</style>
+        #peppermint {
+            max-width: 700px;
+            margin: 0 auto;
+            border: 1px dashed #ddd;
+        }
+    </style>
 
-	<title>Test</title>
+    <title>Test</title>
 
-	<script src="js/html5shiv.js"></script>
+    <script src="js/html5shiv.js"></script>
 </head>
 
 <body>
-	<h1>Vanilla JS</h1>
+    <h1>Vanilla JS</h1>
 
-	<div class="peppermint inactive" id="peppermint">
-		<figure>
-			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+    <div class="peppermint inactive" id="peppermint">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-			<figcaption>it's a cat!</figcaption>
-		</figure>
+            <figcaption>it's a cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-			<figcaption>it's a cat!</figcaption>
-		</figure>
+            <figcaption>it's a cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-			<figcaption>cat!</figcaption>
-		</figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-		<figure>
-			<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-			<figcaption>it's a cat!</figcaption>
-		</figure>
-	</div>
+            <figcaption>it's a cat!</figcaption>
+        </figure>
+    </div>
 
-	<h2>API test</h2>
+    <h2>API test</h2>
 
-	<p>
-		<button id="js-left">&lt; prev</button>
-		<button id="js-right">next &gt;</button>
-	</p>
+    <p>
+        <button id="js-left">&lt; prev</button>
+        <button id="js-right">next &gt;</button>
+    </p>
 
-	<!--p>
-		<label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
-	</p>
+    <!--p>
+        <label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
+    </p>
 
-	<p>
-		<button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
-	</p>
+    <p>
+        <button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
+    </p>
 
-	<p>
-		N: <span class="js-n">?</span>;
-		Pos: <span class="js-pos">?</span>;
-		Length: <span class="js-length">?</span>;
-	</p-->
+    <p>
+        N: <span class="js-n">?</span>;
+        Pos: <span class="js-pos">?</span>;
+        Length: <span class="js-length">?</span>;
+    </p-->
 
-	<h1>jQuery</h1>
+    <h1>jQuery</h1>
 
-	<div class="peppermint jquery-test">
-		<div class="slides-container slides">
-			<figure>
-				<a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+    <div class="peppermint jquery-test">
+        <div class="slides-container slides">
+            <figure>
+                <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-				<figcaption>cat!</figcaption>
-			</figure>
+                <figcaption>cat!</figcaption>
+            </figure>
 
-			<figure>
-				<a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+            <figure>
+                <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-				<figcaption>cat!</figcaption>
-			</figure>
+                <figcaption>cat!</figcaption>
+            </figure>
 
-			<figure>
-				<a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+            <figure>
+                <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-				<figcaption>it's a cat!</figcaption>
-			</figure>
-		</div>
-	</div>
+                <figcaption>it's a cat!</figcaption>
+            </figure>
+        </div>
+    </div>
 
-	<h2>API test</h2>
+    <h2>API test</h2>
 
-	<p>
-		<button class="js-left">&lt; prev</button>
-		<button class="js-right">next &gt;</button>
-	</p>
+    <p>
+        <button class="js-left">&lt; prev</button>
+        <button class="js-right">next &gt;</button>
+    </p>
 
-	<p>
-		<label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
-	</p>
+    <p>
+        <label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
+    </p>
 
-	<p>
-		<button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
-	</p>
+    <p>
+        <button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
+    </p>
 
-	<p>
-		N: <span class="js-n">?</span>;
-		Pos: <span class="js-pos">?</span>;
-		Length: <span class="js-length">?</span>;
-	</p>
+    <p>
+        N: <span class="js-n">?</span>;
+        Pos: <span class="js-pos">?</span>;
+        Length: <span class="js-length">?</span>;
+    </p>
 
-	<script src="js/jquery-1.10.2.min.js"></script>
-	<script src="../src/peppermint.js"></script>
-	<script src="../src/burrito/eventburrito.js"></script>
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="../src/peppermint.js"></script>
+    <script src="../src/burrito/eventburrito.js"></script>
 
-	<script>
-		(function() {
-			function addEvent(el, event, func, bool) {
-				if (el.addEventListener) {
-					el.addEventListener(event, func, bool);
-				}
-				else {
-					el.attachEvent('on'+event, func);
-				}
-			}
+    <script>
+        (function() {
+            function addEvent(el, event, func, bool) {
+                if (el.addEventListener) {
+                    el.addEventListener(event, func, bool);
+                }
+                else {
+                    el.attachEvent('on'+event, func);
+                }
+            }
 
-			var block = document.getElementById('peppermint');
-			var slider = Peppermint(block, {
-				dots: true,
-				slideshow: true,
-				speed: 500,
-				slideshowInterval: 5000,
-				stopSlideshowAfterInteraction: true,
-				mouseDrag: true,
-				onSetup: function(n) {
-					window.console && console.log('Peppermint setup done. Slides found: ' + n);
-				}
-			});
+            var block = document.getElementById('peppermint');
+            var slider = Peppermint(block, {
+                dots: true,
+                slideshow: true,
+                speed: 500,
+                slideshowInterval: 5000,
+                stopSlideshowAfterInteraction: true,
+                onSetup: function(n) {
+                    window.console && console.log('Peppermint setup done. Slides found: ' + n);
+                }
+            });
 
-			addEvent(document.getElementById('js-right'), 'click', slider.next, false);
-			addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
+            addEvent(document.getElementById('js-right'), 'click', slider.next, false);
+            addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
-			$('.jquery-test').Peppermint({
-				slidesContainer: $('.slides-container')[0],
-				dots: true,
-				slideshow: true,
-				mouseDrag: true,
-				onSlideChange: function(n) {
-					$('.js-n').text(n);
-					$('.js-pos').text($('.jquery-test').data('Peppermint').getCurrentPos());
-					$('.js-length').text($('.jquery-test').data('Peppermint').getSlidesNumber());
-				}
-			});
+            $('.jquery-test').Peppermint({
+                slidesContainer: $('.slides-container')[0],
+                dots: true,
+                slideshow: true,
+                onSlideChange: function(n) {
+                    $('.js-n').text(n);
+                    $('.js-pos').text($('.jquery-test').data('Peppermint').getCurrentPos());
+                    $('.js-length').text($('.jquery-test').data('Peppermint').getSlidesNumber());
+                }
+            });
 
-			$('.js-left').on('click', function() {
-				$('.jquery-test').data('Peppermint').prev();
-			});
+            $('.js-left').on('click', function() {
+                $('.jquery-test').data('Peppermint').prev();
+            });
 
-			$('.js-right').on('click', function() {
-				$('.jquery-test').data('Peppermint').next();
-			});
+            $('.js-right').on('click', function() {
+                $('.jquery-test').data('Peppermint').next();
+            });
 
-			$('.js-start').on('click', function() {
-				$('.jquery-test').data('Peppermint').start();
-			});
+            $('.js-start').on('click', function() {
+                $('.jquery-test').data('Peppermint').start();
+            });
 
-			$('.js-stop').on('click', function() {
-				$('.jquery-test').data('Peppermint').stop();
-			});
+            $('.js-stop').on('click', function() {
+                $('.jquery-test').data('Peppermint').stop();
+            });
 
-			$('.js-go').on('click', function() {
-				$('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
-			});
+            $('.js-go').on('click', function() {
+                $('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
+            });
 
-			$('.js-goto').on('keyup', function(event) {
-				if (event.keyCode == 13){
-					$('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
-				}
-			});
+            $('.js-goto').on('keyup', function(event) {
+                if (event.keyCode == 13){
+                    $('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
+                }
+            });
 
-		})();
-	</script>
+        })();
+    </script>
 </body>
 
 </html>
