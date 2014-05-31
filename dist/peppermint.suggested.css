@@ -1,20 +1,20 @@
 /* Peppermint required styles + default appearance styles */
 
-.peppermint.active {
+.peppermint.peppermint-active {
     position: relative;
     overflow: hidden;
     padding-left: 0;
     padding-right: 0;
 }
 
-.peppermint.active .slides {
+.peppermint.peppermint-active .peppermint-slides {
     position: relative;
     overflow: hidden; /* clearfix */
     -ms-touch-action: pan-y;
     touch-action: pan-y;
 }
 
-.peppermint.active .slides > * {
+.peppermint.peppermint-active .peppermint-slides > * {
     float: left;
     margin: 0;
     -moz-box-sizing: border-box;
@@ -24,15 +24,15 @@
     tap-highlight-color: transparent;
 }
 
-.peppermint.active .slides a:active,
-.peppermint.active .slides a:active img {
+.peppermint.peppermint-active .peppermint-slides a:active,
+.peppermint.peppermint-active .peppermint-slides a:active img {
     outline: none;
 }
 
-.peppermint.active,
-.peppermint.active .dots,
-.peppermint.active .slides,
-.peppermint.active .slides > * {
+.peppermint.peppermint-active,
+.peppermint.peppermint-active .peppermint-dots,
+.peppermint.peppermint-active .peppermint-slides,
+.peppermint.peppermint-active .peppermint-slides > * {
     -webkit-transform: translate3d(0,0,0);
     -ms-transform: translate3d(0,0,0);
     -moz-transform: translate3d(0,0,0);
@@ -43,7 +43,7 @@
     backface-visibility: hidden;
 }
 
-.peppermint.mouse .slides {
+.peppermint.peppermint-mouse .peppermint-slides {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -54,7 +54,7 @@
     cursor: grab;
 }
 
-.peppermint.mouse.drag .slides * {
+.peppermint.peppermint-mouse.peppermint-drag .peppermint-slides * {
     cursor: move;
     cursor: -webkit-grabbing;
     cursor: -moz-grabbing;
@@ -84,27 +84,28 @@
     margin-top: 0.5em;
 }
 
-.peppermint.active {
+.peppermint-active {
     margin-bottom: 1.5em;
 }
 
-.peppermint.active .slides {
+.peppermint-slides {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 }
 
 /* dots */
-.peppermint.active ul.dots {
-    margin: 0 0 0.6em 0;
+ul.peppermint-dots {
+    margin: 0.6em 0;
     padding: 0;
+    text-align: center;
     list-style-type: none;
 }
 
-.peppermint.active .slides + ul.dots {
+/*.peppermint.peppermint-active .peppermint-slides + ul.peppermint-dots {
     margin: 0.6em 0 0 0;
-}
+}*/
 
-.peppermint.active ul.dots > li {
+ul.peppermint-dots > li {
     display: inline-block;
     position: relative;
     padding: 0.5em;
@@ -124,7 +125,7 @@
     zoom: 1;
 }
 
-.peppermint.active ul.dots > li > span {
+ul.peppermint-dots > li > span {
     display: inline-block;
     position: absolute;
     top: 50%;
@@ -136,7 +137,7 @@
     background: #9b9890;
 }
 
-.peppermint.active ul.dots > li.active > span {
+ul.peppermint-dots > li.peppermint-active > span {
     margin: -6px 0 0 -6px;
     width: 10px;
     height: 10px;
@@ -144,6 +145,6 @@
     background: transparent;
 }
 
-.peppermint.active ul.dots > li:active {
+ul.peppermint-dots > li:active {
     outline: none;
 }

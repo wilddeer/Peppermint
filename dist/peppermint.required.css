@@ -1,20 +1,20 @@
 /* Peppermint minimal required styles */
 
-.peppermint.active {
+.peppermint.peppermint-active {
     position: relative;
     overflow: hidden;
     padding-left: 0;
     padding-right: 0;
 }
 
-.peppermint.active .slides {
+.peppermint.peppermint-active .peppermint-slides {
     position: relative;
     overflow: hidden; /* clearfix */
     -ms-touch-action: pan-y;
     touch-action: pan-y;
 }
 
-.peppermint.active .slides > * {
+.peppermint.peppermint-active .peppermint-slides > * {
     float: left;
     margin: 0;
     -moz-box-sizing: border-box;
@@ -24,15 +24,15 @@
     tap-highlight-color: transparent;
 }
 
-.peppermint.active .slides a:active,
-.peppermint.active .slides a:active img {
+.peppermint.peppermint-active .peppermint-slides a:active,
+.peppermint.peppermint-active .peppermint-slides a:active img {
     outline: none;
 }
 
-.peppermint.active,
-.peppermint.active .dots,
-.peppermint.active .slides,
-.peppermint.active .slides > * {
+.peppermint.peppermint-active,
+.peppermint.peppermint-active .peppermint-dots,
+.peppermint.peppermint-active .peppermint-slides,
+.peppermint.peppermint-active .peppermint-slides > * {
     -webkit-transform: translate3d(0,0,0);
     -ms-transform: translate3d(0,0,0);
     -moz-transform: translate3d(0,0,0);
@@ -43,7 +43,7 @@
     backface-visibility: hidden;
 }
 
-.peppermint.mouse .slides {
+.peppermint.peppermint-mouse .peppermint-slides {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -54,7 +54,7 @@
     cursor: grab;
 }
 
-.peppermint.mouse.drag .slides * {
+.peppermint.peppermint-mouse.peppermint-drag .peppermint-slides * {
     cursor: move;
     cursor: -webkit-grabbing;
     cursor: -moz-grabbing;

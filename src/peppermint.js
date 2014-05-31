@@ -1,32 +1,40 @@
 function Peppermint(_this, options) {
-    var o = options || {},
-        slider = {
+    var slider = {
             slides: [],
             dots: [],
             left: 0
         },
         slidesNumber,
-        flickThreshold = 200, // Maximum time in ms for flicks
+        flickThreshold = 200, //Flick threshold (ms)
         activeSlide = 0,
         slideWidth,
         dotBlock,
-        slidesTarget = o.slidesContainer || false,
         slideBlock,
         slideshowTimeoutId,
         slideshowActive,
         animationTimer;
 
-    o.speed = o.speed || 300; // transition between slides in ms
-    o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
-    o.slideshow = o.slideshow || false; // launch slideshow at start
-    o.slideshowInterval = o.slideshowInterval || 4000;
-    o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false; // stop slideshow after user interaction
-    o.startSlide = o.startSlide || 0; // first slide to show
-    o.dots = o.dots || false; // show dots
-    o.dotsFirst = o.dotsFirst || false;
-    o.mouseDrag = o.mouseDrag || true;
-    o.cssPrefix = o.cssPrefix || '';
-    o.slidesContainer = o.slidesContainer || _this;
+    //default options
+    var o = {
+        speed: 300, //transition between slides in ms
+        touchSpeed: 300, //transition between slides in ms after touch
+        slideshow: false, //launch slideshow at start
+        slideshowInterval: 4000,
+        stopSlideshowAfterInteraction: false, //stop slideshow after user interaction
+        startSlide: 0, //first slide to show
+        mouseDrag: true, //enable mouse drag
+        disableIfOneSlide: true,
+        cssPrefix: 'peppermint-',
+        dots: false, //show dots
+        dotsPrepend: false, //dots before slides
+        dotsContainer: undefined,
+        slidesContainer: undefined,
+        onSlideChange: undefined, //slide change callback
+        onSetup: undefined //setup callback
+    };
+
+    //merge user options into defaults
+    options && mergeObjects(o, options);
 
     var classes = {
         inactive: o.cssPrefix + 'inactive',
@@ -37,11 +45,19 @@ function Peppermint(_this, options) {
         dots: o.cssPrefix + 'dots'
     };
 
-    // feature detects
+    //feature detects
     var support = {
         transforms: testProp('transform'),
         transitions: testProp('transition')
     };
+
+    function mergeObjects(targetObj, sourceObject) {
+        for (key in sourceObject) {
+            if (sourceObject.hasOwnProperty(key)) {
+                targetObj[key] = sourceObject[key];
+            }
+        }
+    }
 
     function testProp(prop) {
         var prefixes = ['Webkit', 'Moz', 'O', 'ms'],
@@ -55,16 +71,6 @@ function Peppermint(_this, options) {
         }
 
         return false;
-    }
-
-    function addClass(el, cl) {
-        if ((' ' + el.className + ' ').indexOf(' ' + cl + ' ') === -1) {
-            el.className = (el.className + ' ' + cl).replace(/^\s+|\s+$/g, '');
-        }
-    }
-
-    function removeClass(el, cl) {
-        el.className = (' ' + el.className + ' ').replace(' ' + cl + ' ', ' ').replace(/^\s+|\s+$/g, '');
     }
 
     function addClass(el, cl) {
@@ -299,17 +305,22 @@ function Peppermint(_this, options) {
     }
 
     function setup() {
+        var slideSource = o.slidesContainer || _this,
+            dotsTarget = o.dotsContainer || _this;
+
+        if (o.disableIfOneSlide && slideSource.children.length <= 1) return;
+
         //If current UA doesn't support css transforms or transitions -- use fallback functions.
         //(Using separate functions instead of checks for better performance)
         if (!support.transforms || !!window.opera) setPos = setPosFallback;
         if (!support.transitions || !!window.opera) changePos = changePosFallback;
 
-        slideBlock = slidesTarget || document.createElement('div');
+        slideBlock = o.slidesContainer || document.createElement('div');
         addClass(slideBlock, classes.slides);
 
         //get slides & generate dots
-        for (var i = 0, l = o.slidesContainer.children.length; i < l; i++) {
-            var slide = o.slidesContainer.children[i],
+        for (var i = 0, l = slideSource.children.length; i < l; i++) {
+            var slide = slideSource.children[i],
                 dot = document.createElement('li');
 
             slider.slides.push(slide);
@@ -378,10 +389,10 @@ function Peppermint(_this, options) {
             slideBlock.appendChild(slider.slides[i]);
         }
 
-        if (!slidesTarget) _this.appendChild(slideBlock);
+        if (!o.slidesContainer) _this.appendChild(slideBlock);
 
         //append dots
-        if (o.dots) {
+        if (o.dots && slidesNumber > 1) {
             dotBlock = document.createElement('ul');
             addClass(dotBlock, classes.dots);
 
@@ -389,11 +400,11 @@ function Peppermint(_this, options) {
                 dotBlock.appendChild(slider.dots[i]);
             }
 
-            if (o.dotsFirst) {
-                _this.insertBefore(dotBlock,_this.firstChild);
+            if (o.dotsPrepend) {
+                dotsTarget.insertBefore(dotBlock,dotsTarget.firstChild);
             }
             else {
-                _this.appendChild(dotBlock);
+                dotsTarget.appendChild(dotBlock);
             }
         }
 

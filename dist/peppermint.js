@@ -1,40 +1,48 @@
 /*!
  * Peppermint touch slider
- * v. 1.2.0 | https://github.com/wilddeer/Peppermint
+ * v. 1.3.0 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito (included) | https://github.com/wilddeer/Event-Burrito
  * MIT License
  */
 function Peppermint(_this, options) {
-    var o = options || {},
-        slider = {
+    var slider = {
             slides: [],
             dots: [],
             left: 0
         },
         slidesNumber,
-        flickThreshold = 200, // Maximum time in ms for flicks
+        flickThreshold = 200, //Flick threshold (ms)
         activeSlide = 0,
         slideWidth,
         dotBlock,
-        slidesTarget = o.slidesContainer || false,
         slideBlock,
         slideshowTimeoutId,
         slideshowActive,
         animationTimer;
 
-    o.speed = o.speed || 300; // transition between slides in ms
-    o.touchSpeed = o.touchSpeed || 300; // transition between slides in ms after touch
-    o.slideshow = o.slideshow || false; // launch slideshow at start
-    o.slideshowInterval = o.slideshowInterval || 4000;
-    o.stopSlideshowAfterInteraction = o.stopSlideshowAfterInteraction || false; // stop slideshow after user interaction
-    o.startSlide = o.startSlide || 0; // first slide to show
-    o.dots = o.dots || false; // show dots
-    o.dotsFirst = o.dotsFirst || false;
-    o.mouseDrag = o.mouseDrag || true;
-    o.cssPrefix = o.cssPrefix || '';
-    o.slidesContainer = o.slidesContainer || _this;
+    //default options
+    var o = {
+        speed: 300, //transition between slides in ms
+        touchSpeed: 300, //transition between slides in ms after touch
+        slideshow: false, //launch slideshow at start
+        slideshowInterval: 4000,
+        stopSlideshowAfterInteraction: false, //stop slideshow after user interaction
+        startSlide: 0, //first slide to show
+        mouseDrag: true, //enable mouse drag
+        disableIfOneSlide: true,
+        cssPrefix: 'peppermint-',
+        dots: false, //show dots
+        dotsPrepend: false, //dots before slides
+        dotsContainer: undefined,
+        slidesContainer: undefined,
+        onSlideChange: undefined, //slide change callback
+        onSetup: undefined //setup callback
+    };
+
+    //merge user options into defaults
+    options && mergeObjects(o, options);
 
     var classes = {
         inactive: o.cssPrefix + 'inactive',
@@ -45,11 +53,19 @@ function Peppermint(_this, options) {
         dots: o.cssPrefix + 'dots'
     };
 
-    // feature detects
+    //feature detects
     var support = {
         transforms: testProp('transform'),
         transitions: testProp('transition')
     };
+
+    function mergeObjects(targetObj, sourceObject) {
+        for (key in sourceObject) {
+            if (sourceObject.hasOwnProperty(key)) {
+                targetObj[key] = sourceObject[key];
+            }
+        }
+    }
 
     function testProp(prop) {
         var prefixes = ['Webkit', 'Moz', 'O', 'ms'],
@@ -63,16 +79,6 @@ function Peppermint(_this, options) {
         }
 
         return false;
-    }
-
-    function addClass(el, cl) {
-        if ((' ' + el.className + ' ').indexOf(' ' + cl + ' ') === -1) {
-            el.className = (el.className + ' ' + cl).replace(/^\s+|\s+$/g, '');
-        }
-    }
-
-    function removeClass(el, cl) {
-        el.className = (' ' + el.className + ' ').replace(' ' + cl + ' ', ' ').replace(/^\s+|\s+$/g, '');
     }
 
     function addClass(el, cl) {
@@ -307,17 +313,22 @@ function Peppermint(_this, options) {
     }
 
     function setup() {
+        var slideSource = o.slidesContainer || _this,
+            dotsTarget = o.dotsContainer || _this;
+
+        if (o.disableIfOneSlide && slideSource.children.length <= 1) return;
+
         //If current UA doesn't support css transforms or transitions -- use fallback functions.
         //(Using separate functions instead of checks for better performance)
         if (!support.transforms || !!window.opera) setPos = setPosFallback;
         if (!support.transitions || !!window.opera) changePos = changePosFallback;
 
-        slideBlock = slidesTarget || document.createElement('div');
+        slideBlock = o.slidesContainer || document.createElement('div');
         addClass(slideBlock, classes.slides);
 
         //get slides & generate dots
-        for (var i = 0, l = o.slidesContainer.children.length; i < l; i++) {
-            var slide = o.slidesContainer.children[i],
+        for (var i = 0, l = slideSource.children.length; i < l; i++) {
+            var slide = slideSource.children[i],
                 dot = document.createElement('li');
 
             slider.slides.push(slide);
@@ -386,10 +397,10 @@ function Peppermint(_this, options) {
             slideBlock.appendChild(slider.slides[i]);
         }
 
-        if (!slidesTarget) _this.appendChild(slideBlock);
+        if (!o.slidesContainer) _this.appendChild(slideBlock);
 
         //append dots
-        if (o.dots) {
+        if (o.dots && slidesNumber > 1) {
             dotBlock = document.createElement('ul');
             addClass(dotBlock, classes.dots);
 
@@ -397,11 +408,11 @@ function Peppermint(_this, options) {
                 dotBlock.appendChild(slider.dots[i]);
             }
 
-            if (o.dotsFirst) {
-                _this.insertBefore(dotBlock,_this.firstChild);
+            if (o.dotsPrepend) {
+                dotsTarget.insertBefore(dotBlock,dotsTarget.firstChild);
             }
             else {
-                _this.appendChild(dotBlock);
+                dotsTarget.appendChild(dotBlock);
             }
         }
 
@@ -493,188 +504,204 @@ if (window.jQuery) {
  */
 function EventBurrito(_this, options) {
 
-	var o = options || {},
-		noop = function() {};
+    var o = options || {},
+        noop = function() {};
 
-	o.clickTolerance = o.clickTolerance || 0;
-	o.preventScroll = o.preventScroll || false;
-	o.mouse = (o.mouse === undefined?true:o.mouse);
-	o.start = o.start || noop;
-	o.move = o.move || noop;
-	o.end = o.end || noop;
-	o.click = o.click || noop;
+    o.clickTolerance = o.clickTolerance || 0;
+    o.preventScroll = o.preventScroll || false;
+    o.mouse = o.mouse !== undefined? o.mouse: true;
+    o.start = o.start || noop;
+    o.move = o.move || noop;
+    o.end = o.end || noop;
+    o.click = o.click || noop;
 
-	var	support = {
-			pointerEvents: !!window.navigator.pointerEnabled,
-			msPointerEvents: !!window.navigator.msPointerEnabled
-		},
-		start = {},
-		diff = {},
-		speed = {},
-		stack = [],
-		isScrolling,
-		eventType,
-		clicksAllowed = true, //flag allowing default click actions (e.g. links)
-		eventModel = (support.pointerEvents? 1 : (support.msPointerEvents? 2 : 0)),
-		events = [
-			['touchstart', 'touchmove', 'touchend', 'touchcancel'], //touch events
-			['pointerdown', 'pointermove', 'pointerup', 'pointercancel'], //pointer events
-			['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'], //IE10 pointer events
-			['mousedown', 'mousemove', 'mouseup', false] //mouse events
-		],
-		//some checks for different event types
-		checks = [
-			//touch events
-			function(e) {
-				//if it's multitouch or pinch move -- skip the event
-				return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
-			},
-			//pointer events
-			function(e) {
-				//if event is not primary (other pointers during multitouch),
-				//if left mouse button is not pressed,
-				//if mouse drag is disabled and event is not touch -- skip it!
-				return !e.isPrimary || e.buttons !== 1 || (!o.mouse && e.pointerType !== 'touch' && e.pointerType !== 'pen');
-			},
-			//IE10 pointer events
-			function(e) {
-				//same checks as in pointer events
-				return !e.isPrimary || (e.buttons && e.buttons !== 1) || (!o.mouse && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
-			},
-			//mouse events
-			function(e) {
-				//if left mouse button is not pressed -- skip the event
-				//in IE7-8 `buttons` is not defined, in IE9 LMB is 0
-				return (e.buttons && e.buttons !== 1);
-			}
-		];
+    var support = {
+            pointerEvents: !!window.navigator.pointerEnabled,
+            msPointerEvents: !!window.navigator.msPointerEnabled
+        },
+        start = {},
+        diff = {},
+        speed = {},
+        stack = [],
+        listeners = [],
+        isScrolling,
+        eventType,
+        clicksAllowed = true, //flag allowing default click actions (e.g. links)
+        eventModel = (support.pointerEvents? 1 : (support.msPointerEvents? 2 : 0)),
+        events = [
+            ['touchstart', 'touchmove', 'touchend', 'touchcancel'], //touch events
+            ['pointerdown', 'pointermove', 'pointerup', 'pointercancel'], //pointer events
+            ['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'], //IE10 pointer events
+            ['mousedown', 'mousemove', 'mouseup', false] //mouse events
+        ],
+        //some checks for different event types
+        checks = [
+            //touch events
+            function(e) {
+                //skip the event if it's multitouch or pinch move
+                return (e.touches && e.touches.length > 1) || (e.scale && e.scale !== 1);
+            },
+            //pointer events
+            function(e) {
+                //Skip it, if:
+                //1. event is not primary (other pointers during multitouch),
+                //2. left mouse button is not pressed,
+                //3. mouse drag is disabled and event is not touch
+                return !e.isPrimary || e.buttons !== 1 || (!o.mouse && e.pointerType !== 'touch' && e.pointerType !== 'pen');
+            },
+            //IE10 pointer events
+            function(e) {
+                //same checks as in pointer events
+                return !e.isPrimary || (e.buttons && e.buttons !== 1) || (!o.mouse && e.pointerType !== e.MSPOINTER_TYPE_TOUCH && e.pointerType !== e.MSPOINTER_TYPE_PEN);
+            },
+            //mouse events
+            function(e) {
+                //skip the event if left mouse button is not pressed
+                //in IE7-8 `buttons` is not defined, in IE9 LMB is 0
+                return (e.buttons && e.buttons !== 1);
+            }
+        ];
 
-	function addEvent(el, event, func, bool) {
-		if (!event) return;
+    function addEvent(el, event, func, bool) {
+        if (!event) return;
 
-		el.addEventListener? el.addEventListener(event, func, !!bool): el.attachEvent('on'+event, func);
-	}
+        el.addEventListener? el.addEventListener(event, func, !!bool): el.attachEvent('on'+event, func);
 
-	function removeEvent(el, event, func, bool) {
-		if (!event) return;
+        //return event remover to easily remove anonymous functions later
+        return {
+            remove: function() {
+                removeEvent(el, event, func, bool);
+            }
+        };
+    }
 
-		el.removeEventListener? el.removeEventListener(event, func, !!bool): el.detachEvent('on'+event, func);
-	}
+    function removeEvent(el, event, func, bool) {
+        if (!event) return;
 
-	function getDiff(event) {
-		diff = {
-			x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
-			y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
+        el.removeEventListener? el.removeEventListener(event, func, !!bool): el.detachEvent('on'+event, func);
+    }
 
-			time: Number(new Date) - start.time
-		};
+    function preventDefault(event) {
+        event.preventDefault? event.preventDefault() : event.returnValue = false;
+    }
 
-		if (diff.time - stack[stack.length - 1].time) {
-			for (var i = 0; i < stack.length - 1 && diff.time - stack[i].time > 80; i++);
+    function getDiff(event) {
+        diff = {
+            x: (eventType? event.clientX : event.touches[0].clientX) - start.x,
+            y: (eventType? event.clientY : event.touches[0].clientY) - start.y,
 
-			speed = {
-				x: (diff.x - stack[i].x) / (diff.time - stack[i].time),
-				y: (diff.y - stack[i].y) / (diff.time - stack[i].time)
-			};
+            time: Number(new Date) - start.time
+        };
 
-			if (stack.length >= 5) stack.shift();
-			stack.push({x: diff.x, y: diff.y, time: diff.time});
-		}
-	}
+        if (diff.time - stack[stack.length - 1].time) {
+            for (var i = 0; i < stack.length - 1 && diff.time - stack[i].time > 80; i++);
 
-	function tStart(event, eType) {
-		clicksAllowed = true;
-		eventType = eType; //leak event type
+            speed = {
+                x: (diff.x - stack[i].x) / (diff.time - stack[i].time),
+                y: (diff.y - stack[i].y) / (diff.time - stack[i].time)
+            };
 
-		if (checks[eventType](event)) return;
+            if (stack.length >= 5) stack.shift();
+            stack.push({x: diff.x, y: diff.y, time: diff.time});
+        }
+    }
 
-		//add event listeners to the document, so that the slider
-		//will continue to recieve events wherever the pointer is
-		addEvent(document, events[eventType][1], tMove);
-		addEvent(document, events[eventType][2], tEnd);
-		addEvent(document, events[eventType][3], tEnd);
+    function tStart(event, eType) {
+        clicksAllowed = true;
+        eventType = eType; //leak event type
 
-		//fixes WebKit's cursor while dragging
-		if (eventType) event.preventDefault? event.preventDefault() : event.returnValue = false;
+        if (checks[eventType](event)) return;
 
-		//remember starting time and position
-		start = {
-			x: eventType? event.clientX : event.touches[0].clientX,
-			y: eventType? event.clientY : event.touches[0].clientY,
+        //attach event listeners to the document, so that the slider
+        //will continue to recieve events wherever the pointer is
+        addEvent(document, events[eventType][1], tMove);
+        addEvent(document, events[eventType][2], tEnd);
+        addEvent(document, events[eventType][3], tEnd);
 
-			time: Number(new Date)
-		};
+        //fixes WebKit's cursor while dragging
+        if (eventType) preventDefault(event);
 
-		//reset
-		isScrolling = undefined;
-		diff = {x:0, y:0, time: 0};
-		speed = {x:0, y:0};
-		stack = [{x:0, y:0, time: 0}];
+        //remember starting time and position
+        start = {
+            x: eventType? event.clientX : event.touches[0].clientX,
+            y: eventType? event.clientY : event.touches[0].clientY,
 
-		o.start(event, start);
-	}
+            time: Number(new Date)
+        };
 
-	function tMove(event) {
-		//if user is trying to scroll vertically -- do nothing
-		if ((!o.preventScroll && isScrolling) || checks[eventType](event)) return;
+        //reset
+        isScrolling = undefined;
+        diff = {x:0, y:0, time: 0};
+        speed = {x:0, y:0};
+        stack = [{x:0, y:0, time: 0}];
 
-		getDiff(event);
+        o.start(event, start);
+    }
 
-		if (Math.abs(diff.x) > o.clickTolerance || Math.abs(diff.y) > o.clickTolerance) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
+    function tMove(event) {
+        //if user is trying to scroll vertically -- do nothing
+        if ((!o.preventScroll && isScrolling) || checks[eventType](event)) return;
 
-		//check whether the user is trying to scroll vertically
-		if (isScrolling === undefined && eventType !== 3) {
-			//assign and check `isScrolling` at the same time
-			if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y)) && !o.preventScroll) return;
-		}
+        getDiff(event);
 
-		event.preventDefault? event.preventDefault() : event.returnValue = false; //Prevent scrolling
+        if (Math.abs(diff.x) > o.clickTolerance || Math.abs(diff.y) > o.clickTolerance) clicksAllowed = false; //if there was a move -- deny all the clicks before the next touchstart
 
-		o.move(event, start, diff, speed);
-	}
+        //check whether the user is trying to scroll vertically
+        if (isScrolling === undefined && eventType !== 3) {
+            //assign and check `isScrolling` at the same time
+            if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y)) && !o.preventScroll) return;
+        }
 
-	function tEnd(event) {
-		eventType && getDiff(event);
+        preventDefault(event); //Prevent scrolling
 
-		//IE likes to focus the link after touchend.
-		//Since we dont' want to disable the outline completely for accessibility reasons,
-		//we just defocus it after touch and disable the outline for `:active` links in css.
-		//This way the outline will remain visible when tabbing through the links.
-		event.target && event.target.blur && event.target.blur();
+        o.move(event, start, diff, speed);
+    }
 
-		//remove the event listeners
-		detachEvents();
+    function tEnd(event) {
+        eventType && getDiff(event);
 
-		o.end(event, start, diff, speed);
-	}
+        //IE likes to focus links after touchend.
+        //Since we don't want to disable link outlines completely for accessibility reasons,
+        //we just defocus it after touch and disable the outline for `:active` links in css.
+        //This way the outline will remain visible when using keyboard.
+        event.target && event.target.blur && event.target.blur();
 
-	//removes the event listeners from the document
-	function detachEvents() {
-		removeEvent(document, events[eventType][1], tMove);
-		removeEvent(document, events[eventType][2], tEnd);
-		removeEvent(document, events[eventType][3], tEnd);
-	}
+        //detach event listeners from the document
+        removeEvent(document, events[eventType][1], tMove);
+        removeEvent(document, events[eventType][2], tEnd);
+        removeEvent(document, events[eventType][3], tEnd);
 
-	//bind the touchstart
-	addEvent(_this, events[eventModel][0], function(e) {tStart(e, eventModel);});
-	//prevent stuff from dragging when using mouse
-	addEvent(_this, 'dragstart', function(e){
-		event.preventDefault? event.preventDefault() : event.returnValue = false;
-	});
+        o.end(event, start, diff, speed);
+    }
 
-	//bind mousedown if necessary
-	if (o.mouse && !eventModel) {
-		addEvent(_this, events[3][0], function(e) {tStart(e, 3);});
-	}
+    function init() {
+        //bind touchstart
+        listeners.push(addEvent(_this, events[eventModel][0], function(e) {tStart(e, eventModel);}));
+        //prevent stuff from dragging when using mouse
+        listeners.push(addEvent(_this, 'dragstart', preventDefault));
 
-	//No clicking during touch
-	addEvent(_this, 'click', function(event) {
-		clicksAllowed? o.click(event): (event.preventDefault? event.preventDefault() : event.returnValue = false);
-	});
+        //bind mousedown if necessary
+        if (o.mouse && !eventModel) {
+            listeners.push(addEvent(_this, events[3][0], function(e) {tStart(e, 3);}));
+        }
 
-	return {
-		getClicksAllowed: function() {
-			return clicksAllowed;
-		}
-	}
+        //No clicking during touch
+        listeners.push(addEvent(_this, 'click', function(event) {
+            clicksAllowed? o.click(event): preventDefault(event);
+        }));
+    }
+
+    init();
+
+    //expose the API
+    return {
+        getClicksAllowed: function() {
+            return clicksAllowed;
+        },
+        kill: function() {
+            for (var i = listeners.length - 1; i >= 0; i--) {
+                listeners[i].remove();
+            }
+        }
+    }
 }

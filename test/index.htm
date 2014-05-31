@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="../src/peppermint.appearance.css">
 
     <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: normal;
+        }
+
         figure,
         figcaption,
         section {
@@ -32,7 +43,9 @@
 </head>
 
 <body>
-    <h1>Vanilla JS</h1>
+    <h1>Tests</h1>
+
+    <h2>Vanilla JS</h2>
 
     <div class="peppermint inactive" id="peppermint">
         <figure>
@@ -90,28 +103,14 @@
         </figure>
     </div>
 
-    <h2>API test</h2>
+    <h3>API test</h3>
 
     <p>
         <button id="js-left">&lt; prev</button>
         <button id="js-right">next &gt;</button>
     </p>
 
-    <!--p>
-        <label>Go to: <input type="text" value="1" class="js-goto"></label> <button class="js-go">Go</button>
-    </p>
-
-    <p>
-        <button class="js-start">Start slideshow</button> <button class="js-stop">Stop slideshow</button>
-    </p>
-
-    <p>
-        N: <span class="js-n">?</span>;
-        Pos: <span class="js-pos">?</span>;
-        Length: <span class="js-length">?</span>;
-    </p-->
-
-    <h1>jQuery</h1>
+    <h2>jQuery</h2>
 
     <div class="peppermint jquery-test">
         <div class="slides-container slides">
@@ -135,7 +134,7 @@
         </div>
     </div>
 
-    <h2>API test</h2>
+    <h3>API test</h3>
 
     <p>
         <button class="js-left">&lt; prev</button>
@@ -156,6 +155,110 @@
         Length: <span class="js-length">?</span>;
     </p>
 
+    <h2>Dots undefined, no mousedrag, slideshow</h2>
+
+    <div class="peppermint nodots-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+    </div>
+
+    <h2>Single slide, dots, slideshow</h2>
+
+    <div class="peppermint singleslide-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+    </div>
+
+    <h2>Single slide, dots, slideshow, disableIfOneSlide: false</h2>
+
+    <div class="peppermint singleslide-enabled-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+    </div>
+
+    <h2>Dots first, start from 3rd slide</h2>
+
+    <div class="peppermint dotsfirst-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+            <figcaption>it's a cat!</figcaption>
+        </figure>
+    </div>
+
+    <h2>Dots container, prepend</h2>
+
+    <div class="peppermint dotstarget-prepend-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+            <figcaption>it's a cat!</figcaption>
+        </figure>
+    </div>
+
+    <div class="dotstarget" style="border: 1px dashed crimson; padding: 15px;"><p>dots container</p></div>
+
+    <h2>Dots container</h2>
+
+    <div class="peppermint dotstarget-test">
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+            <figcaption>cat!</figcaption>
+        </figure>
+
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+            <figcaption>it's a cat!</figcaption>
+        </figure>
+    </div>
+
     <script src="js/jquery-1.10.2.min.js"></script>
     <script src="../src/peppermint.js"></script>
     <script src="../src/burrito/eventburrito.js"></script>
@@ -171,7 +274,7 @@
                 }
             }
 
-            var block = document.getElementById('peppermint');
+            var block = document.getElementsByClassName('peppermint')[0];
             var slider = Peppermint(block, {
                 dots: true,
                 slideshow: true,
@@ -221,6 +324,39 @@
                 if (event.keyCode == 13){
                     $('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
                 }
+            });
+
+            $('.nodots-test').Peppermint({
+                slideshow: true,
+                mouseDrag: false
+            });
+
+            $('.singleslide-test').Peppermint({
+                slideshow: true,
+                dots: true
+            });
+
+            $('.singleslide-enabled-test').Peppermint({
+                slideshow: true,
+                dots: true,
+                disableIfOneSlide: false
+            });
+
+            $('.dotsfirst-test').Peppermint({
+                dots: true,
+                dotsPrepend: true,
+                startSlide: 2
+            });
+
+            $('.dotstarget-prepend-test').Peppermint({
+                dots: true,
+                dotsContainer: $('.dotstarget')[0],
+                dotsPrepend: true
+            });
+
+            $('.dotstarget-test').Peppermint({
+                dots: true,
+                dotsContainer: $('.dotstarget')[0]
             });
 
         })();

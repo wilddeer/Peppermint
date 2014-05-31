@@ -24,22 +24,22 @@ Yet another touch slider. Only better.
 
 HTML markup:
 
-	<div class="peppermint inactive" id="peppermint">
-	  <figure> ... </figure>
+    <div class="peppermint inactive" id="peppermint">
+      <figure> ... </figure>
 
-	  <figure> ... </figure>
+      <figure> ... </figure>
 
-	  <figure> ... </figure>
-	</div>
+      <figure> ... </figure>
+    </div>
 
 Javascript:
 
-	var slider = Peppermint(document.getElementById('peppermint'));
+    var slider = Peppermint(document.getElementById('peppermint'));
 
 Or javascript + jQuery:
 
-	$('.peppermint').Peppermint();
-	
+    $('.peppermint').Peppermint();
+    
 `inactive` class is not required. It is replaced with `active` during setup.
 
 You are free to use any other tag instead of `figure`. When using `figure`, don't forget to include [html5shiv](https://github.com/aFarkas/html5shiv), otherwise it won't work in old IEs.
@@ -50,60 +50,69 @@ Place anything you want within the slides.
 
 Peppermint can take settings object as an optional second parameter (first when using jQuery). Default settings:
 
-	{
-	  //transition time when changing slides, ms
-	  speed: 300,
-	
-	  //transition time when changing slides after touch, ms
-	  touchSpeed: 300,
-	
-	  //slideshow enabled
-	  slideshow: false,
-	
-	  //slideshow interval, ms
-	  slideshowInterval: 4000,
-	
-	  //stop slideshow after user interacts with the slider
-	  stopSlideshowAfterInteraction: false,
-	
-	  //starting slide
-	  startSlide: 0,
-	
-	  //show dots
-	  dots: false,
+    {
+      //transition time when changing slides, ms
+      speed: 300,
+    
+      //transition time when changing slides after touch, ms
+      touchSpeed: 300,
+    
+      //slideshow enabled
+      slideshow: false,
+    
+      //slideshow interval, ms
+      slideshowInterval: 4000,
+    
+      //stop slideshow after user interacts with the slider
+      stopSlideshowAfterInteraction: false,
+    
+      //slide number to start with
+      startSlide: 0,
 
-	  //dots before slides
-	  dotsFirst: false,
+      //use mouse to drag the slider
+      mouseDrag: true,
 
-	  //use mouse to drag the slider
-	  mouseDrag: true,
+      //don't initialize Peppermint if there's only one slide
+      disableIfOneSlide: true,
 
-	  //Prefix to be used with peppermint classes,
-	  //such as `inactive`, `active`, `mouse` and `drag`.
-	  //Don't forget to change the stylesheet appropriately!
-	  cssPrefix: '',
-	
-	  //Callback function, runs at slide change.
-	  //Receives slide number as a parameter.
-	  onSlideChange: undefined,
-	
-	  //Callback function, runs at setup end.
-	  //Receives total number of slides as a parameter.
-	  onSetup: undefined
-	}
+      //Prefix to be used with Peppermint classes,
+      //such as `inactive`, `active`, `mouse`, `drag`, etc.
+      //Don't forget to change the stylesheet appropriately!
+      cssPrefix: 'peppermint-',
+
+      //show dots
+      dots: false,
+
+      //prepend dots to dotsContainer (default is append)
+      dotsPrepend: false,
+
+      //element to contain dots, default to peppermint's block
+      dotsContainer: undefined,
+
+      //element to contain slides, if not specified -- new block is created
+      slidesContainer: undefined,
+    
+      //Callback function, runs at slide change.
+      //Receives slide number as a parameter.
+      onSlideChange: undefined,
+    
+      //Callback function, runs at setup end.
+      //Receives total number of slides as a parameter.
+      onSetup: undefined
+    }
 
 Example:
 
-	var slider = Peppermint(document.getElementById('peppermint'), {
-	  dots: true,
-	  slideshow: true,
-	  speed: 500,
-	  slideshowInterval: 5000,
-	  stopSlideshowAfterInteraction: true,
-	  onSetup: function(n) {
-	    console.log('Peppermint setup done. Slides found: ' + n);
-	  }
-	});
+    var slider = Peppermint(document.getElementById('peppermint'), {
+      dots: true,
+      slideshow: true,
+      speed: 500,
+      slideshowInterval: 5000,
+      stopSlideshowAfterInteraction: true,
+      onSetup: function(n) {
+        console.log('Peppermint setup done. Slides found: ' + n);
+      }
+    });
 
 ##API
 
@@ -129,13 +138,13 @@ Peppermint exposes a set of functions upon installation. These functions can be 
 
 Example:
 
-	var slider = Peppermint(document.getElementById('peppermint')),
-	    rightArr = document.getElementById('right-arr'),
-	    leftArr = document.getElementById('left-arr');
+    var slider = Peppermint(document.getElementById('peppermint')),
+        rightArr = document.getElementById('right-arr'),
+        leftArr = document.getElementById('left-arr');
 
-	rightArr.addEventListener('click', slider.next, false);
-	leftArr.addEventListener('click', slider.prev, false);
-	
+    rightArr.addEventListener('click', slider.next, false);
+    leftArr.addEventListener('click', slider.prev, false);
+    
 ##License
 
 [MIT license](http://opensource.org/licenses/MIT).
