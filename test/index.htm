@@ -113,25 +113,23 @@
     <h2>jQuery</h2>
 
     <div class="peppermint jquery-test">
-        <div class="slides-container slides">
-            <figure>
-                <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
-                <figcaption>cat!</figcaption>
-            </figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-            <figure>
-                <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+        <figure>
+            <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
 
-                <figcaption>cat!</figcaption>
-            </figure>
+            <figcaption>cat!</figcaption>
+        </figure>
 
-            <figure>
-                <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+        <figure>
+            <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
 
-                <figcaption>it's a cat!</figcaption>
-            </figure>
-        </div>
+            <figcaption>it's a cat!</figcaption>
+        </figure>
     </div>
 
     <h3>API test</h3>
@@ -259,6 +257,30 @@
         </figure>
     </div>
 
+    <h2>Slides container</h2>
+
+    <div class="peppermint slides-container-inner-test">
+        <div class="slides-container">
+            <figure>
+                <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
+
+                <figcaption>cat!</figcaption>
+            </figure>
+
+            <figure>
+                <a href="pics/2.jpg" target="_blank"><img src="pics/p2.jpg" alt="cat!"></a>
+
+                <figcaption>cat!</figcaption>
+            </figure>
+
+            <figure>
+                <a href="pics/3.jpg" target="_blank"><img src="pics/p3.jpg" alt="it's a cat!"></a>
+
+                <figcaption>it's a cat!</figcaption>
+            </figure>
+        </div>
+    </div>
+
     <script src="js/jquery-1.10.2.min.js"></script>
     <script src="../src/peppermint.js"></script>
     <script src="../src/burrito/eventburrito.js"></script>
@@ -290,7 +312,6 @@
             addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
             $('.jquery-test').Peppermint({
-                slidesContainer: $('.slides-container')[0],
                 dots: true,
                 slideshow: true,
                 onSlideChange: function(n) {
@@ -358,6 +379,12 @@
                 dots: true,
                 dotsContainer: $('.dotstarget')[0]
             });
+
+            $('.slides-container-inner-test').Peppermint({
+                dots: true,
+                slidesContainer: $('.slides-container-inner-test .slides-container')[0]
+            });
+
 
         })();
     </script>
