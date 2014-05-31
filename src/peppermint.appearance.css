@@ -37,9 +37,13 @@ ul.peppermint-dots {
     list-style-type: none;
 }
 
-/*.peppermint.peppermint-active .peppermint-slides + ul.peppermint-dots {
+.peppermint-active ul.peppermint-dots {
+    margin: 0 0 0.6em 0;
+}
+
+.peppermint-active .peppermint-slides + ul.peppermint-dots {
     margin: 0.6em 0 0 0;
-}*/
+}
 
 ul.peppermint-dots > li {
     display: inline-block;
