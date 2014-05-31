@@ -9,7 +9,7 @@ Yet another touch slider. Only better.
 - IE7+ compatible
 - Library agnostic. If jQuery is available, registers itself as a plugin.
 - Uses CSS3 transforms &amp; animations, falls back to timer animations when necessary
-- Only 7.5 Kb minified
+- Only 7.7 Kb minified
 - Perfomance-optimized `touch` functions
 - API and callback functions for extensibility
 - [Doesn't break](http://wd.dizaina.net/en/internet-maintenance/js-sliders-and-the-tab-key/) when <kbd>tab</kbd>&rsquo;bing
