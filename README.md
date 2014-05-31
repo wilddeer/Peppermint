@@ -86,10 +86,11 @@ Peppermint can take settings object as an optional second parameter (first when 
       //prepend dots to dotsContainer (default is append)
       dotsPrepend: false,
 
-      //element to contain dots, default to peppermint's block
+      //Element to contain dots, defaults to peppermint's root element.
+      //Can be anywhere on the page.
       dotsContainer: undefined,
 
-      //element to contain slides, if not specified -- new block is created
+      //element containing slides, defaults to Peppermint's root element
       slidesContainer: undefined,
     
       //Callback function, runs at slide change.
