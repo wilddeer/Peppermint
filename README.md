@@ -86,7 +86,7 @@ Peppermint can take settings object as an optional second parameter (first when 
       //prepend dots to dotsContainer (default is append)
       dotsPrepend: false,
 
-      //Element to contain dots, defaults to peppermint's root element.
+      //Element to contain dots, defaults to Peppermint's root element.
       //Can be anywhere on the page.
       dotsContainer: undefined,
 
