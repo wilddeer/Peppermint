@@ -5,7 +5,7 @@
 Yet another touch slider. Only better.
 
 - Works with mouse, [Touch Events](http://www.w3.org/TR/touch-events/), [Pointer Events](http://www.w3.org/TR/pointerevents/), old [IE10 Pointer Events](http://msdn.microsoft.com/en-us/library/ie/hh673557\(v=vs.85\).aspx)
-- Works on iPhones, Androids, Windows Phones, Blackberries, Windows 8 devices
+- Responsive, works on iPhones, Androids, Windows Phones, Blackberries, Windows 8 devices
 - IE7+ compatible
 - Library agnostic. If jQuery is available, registers itself as a plugin.
 - Uses CSS3 transforms &amp; animations, falls back to timer animations when necessary
@@ -24,7 +24,7 @@ Yet another touch slider. Only better.
 
 HTML markup:
 
-    <div class="peppermint inactive" id="peppermint">
+    <div class="peppermint peppermint-inactive" id="peppermint">
       <figure> ... </figure>
 
       <figure> ... </figure>
@@ -40,7 +40,7 @@ Or javascript + jQuery:
 
     $('.peppermint').Peppermint();
     
-`inactive` class is not required. It is replaced with `active` during setup.
+`peppermint-inactive` class is not required. It is replaced with `peppermint-active` during setup.
 
 You are free to use any other tag instead of `figure`. When using `figure`, don't forget to include [html5shiv](https://github.com/aFarkas/html5shiv), otherwise it won't work in old IEs.
 
@@ -135,7 +135,7 @@ Peppermint exposes a set of functions upon installation. These functions can be 
 
 `getSlidesNumber()` -- get total number of slides;
 
-`recalcWidth()` -- recalculate the slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
+`recalcWidth()` -- recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
 
 Example:
 
