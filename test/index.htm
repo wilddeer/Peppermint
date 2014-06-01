@@ -47,7 +47,7 @@
 
     <h2>Vanilla JS</h2>
 
-    <div class="peppermint inactive" id="peppermint">
+    <div class="peppermint peppermint-inactive" id="peppermint">
         <figure>
             <a href="pics/1.jpg" target="_blank"><img src="pics/p1.jpg" alt="cat!"></a>
 
@@ -296,7 +296,7 @@
                 }
             }
 
-            var block = document.getElementsByClassName('peppermint')[0];
+            var block = document.getElementById('peppermint');
             var slider = Peppermint(block, {
                 dots: true,
                 slideshow: true,
