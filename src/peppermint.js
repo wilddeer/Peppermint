@@ -437,28 +437,18 @@ function Peppermint(_this, options) {
             return changeActiveSlide(parseInt(slide, 10));
         },
 
-        next: function() {
-            return nextSlide();
-        },
+        next: nextSlide,
 
-        prev: function() {
-            return prevSlide();
-        },
+        prev: prevSlide,
 
         //start slideshow
-        start: function() {
-            startSlideshow();
-        },
+        start: startSlideshow,
 
         //stop slideshow
-        stop: function() {
-            stopSlideshow();
-        },
+        stop: stopSlideshow,
 
         //pause slideshow until the next slide change
-        pause: function() {
-            pauseSlideshow();
-        },
+        pause: pauseSlideshow,
 
         //get current slide number
         getCurrentPos: function() {
@@ -471,9 +461,7 @@ function Peppermint(_this, options) {
         },
 
         //invoke this when the slider's width is changed
-        recalcWidth: function() {
-            onWidthChange();
-        }
+        recalcWidth: onWidthChange
     };
 };
 
