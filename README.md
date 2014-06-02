@@ -174,7 +174,7 @@ var slider = Peppermint(document.getElementById('peppermint')),
     //save links to HTML nodes
     rightArr = document.getElementById('right-arr'),
     leftArr = document.getElementById('left-arr'),
-    getSlidesNumberButton = document.getElementById('getslidesnumber');;
+    getSlidesNumberButton = document.getElementById('getslidesnumber');
 
 //click `#right-arr` to go to the next slide
 rightArr.addEventListener('click', slider.next, false);
@@ -182,7 +182,7 @@ rightArr.addEventListener('click', slider.next, false);
 //click `#left-arr` to go to the previous slide
 leftArr.addEventListener('click', slider.prev, false);
 
-//click `#getslidesnumber` to get total number of slides
+//click `#getslidesnumber` to alert total number of slides
 getSlidesNumberButton.addEventListener('click', function() {
   alert('There are ' + slider.getSlidesNumber() + ' slides');
 }, false);
