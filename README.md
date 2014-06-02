@@ -110,7 +110,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 }
 ```
 
-###Examples
+####Examples
 
 JS:
 
@@ -164,7 +164,7 @@ Peppermint exposes a set of functions upon installation. These functions can be 
 
 `recalcWidth()` -- recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
 
-###Examples
+####Examples
 
 JS:
 
