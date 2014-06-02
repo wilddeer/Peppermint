@@ -311,39 +311,33 @@
             addEvent(document.getElementById('js-right'), 'click', slider.next, false);
             addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
-            $('.jquery-test').Peppermint({
+            var jqtestSlider = $('.jquery-test');
+
+            jqtestSlider.Peppermint({
                 dots: true,
                 slideshow: true,
                 onSlideChange: function(n) {
                     $('.js-n').text(n);
-                    $('.js-pos').text($('.jquery-test').data('Peppermint').getCurrentPos());
-                    $('.js-length').text($('.jquery-test').data('Peppermint').getSlidesNumber());
+                    $('.js-pos').text(jqtestSlider.data('Peppermint').getCurrentPos());
+                    $('.js-length').text(jqtestSlider.data('Peppermint').getSlidesNumber());
                 }
             });
 
-            $('.js-left').on('click', function() {
-                $('.jquery-test').data('Peppermint').prev();
-            });
+            $('.js-left').on('click', jqtestSlider.data('Peppermint').prev);
 
-            $('.js-right').on('click', function() {
-                $('.jquery-test').data('Peppermint').next();
-            });
+            $('.js-right').on('click', jqtestSlider.data('Peppermint').next);
 
-            $('.js-start').on('click', function() {
-                $('.jquery-test').data('Peppermint').start();
-            });
+            $('.js-start').on('click', jqtestSlider.data('Peppermint').start);
 
-            $('.js-stop').on('click', function() {
-                $('.jquery-test').data('Peppermint').stop();
-            });
+            $('.js-stop').on('click', jqtestSlider.data('Peppermint').stop);
 
             $('.js-go').on('click', function() {
-                $('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
+                jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
             });
 
             $('.js-goto').on('keyup', function(event) {
                 if (event.keyCode == 13){
-                    $('.jquery-test').data('Peppermint').slideTo($('.js-goto').val());
+                    jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
                 }
             });
 
