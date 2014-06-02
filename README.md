@@ -110,10 +110,27 @@ Peppermint can take settings object as an optional second parameter (first when 
 }
 ```
 
-Example:
+###Example:
+
+JS:
 
 ```javascript
 var slider = Peppermint(document.getElementById('peppermint'), {
+  dots: true,
+  slideshow: true,
+  speed: 500,
+  slideshowInterval: 5000,
+  stopSlideshowAfterInteraction: true,
+  onSetup: function(n) {
+    console.log('Peppermint setup done. Slides found: ' + n);
+  }
+});
+```
+
+JS + jQuery:
+
+```javascript
+$('.peppermint').Peppermint({
   dots: true,
   slideshow: true,
   speed: 500,
@@ -186,7 +203,7 @@ $('#right-arr').click(slider.data('Peppermint').next);
 //click `#left-arr` to go to the previous slide
 $('#left-arr').click(slider.data('Peppermint').prev);
 
-//click `#getslidesnumber` to get total number of slides
+//click `#getslidesnumber` to alert total number of slides
 $('#getslidesnumber').click(function() {
     alert('There are '+slider.data('Peppermint').getSlidesNumber()+' slides');
 });
