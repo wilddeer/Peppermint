@@ -184,7 +184,7 @@ leftArr.addEventListener('click', slider.prev, false);
 
 //click `#getslidesnumber` to get total number of slides
 getSlidesNumberButton.addEventListener('click', function() {
-  alert('There are '+slider.getSlidesNumber()+' slides');
+  alert('There are ' + slider.getSlidesNumber() + ' slides');
 }, false);
 ```
 
@@ -205,7 +205,7 @@ $('#left-arr').click(slider.data('Peppermint').prev);
 
 //click `#getslidesnumber` to alert total number of slides
 $('#getslidesnumber').click(function() {
-    alert('There are '+slider.data('Peppermint').getSlidesNumber()+' slides');
+    alert('There are ' + slider.data('Peppermint').getSlidesNumber() + ' slides');
 });
 ```
     
