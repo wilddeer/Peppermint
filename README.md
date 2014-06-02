@@ -208,6 +208,10 @@ $('#getslidesnumber').click(function() {
     alert('There are ' + slider.data('Peppermint').getSlidesNumber() + ' slides');
 });
 ```
+
+##Using Peppermint?
+
+Drop me a link &rarr; [:envelope: wd@dizaina.net](mailto:wd@dizaina.net).
     
 ##License
 
