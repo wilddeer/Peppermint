@@ -470,8 +470,10 @@ if (window.jQuery) {
     (function($) {
         $.fn.Peppermint = function(options) {
             this.each(function() {
-                $(this).data('Peppermint', Peppermint($(this)[0], options));
+                $(this).data('Peppermint', Peppermint(this, options));
             });
+
+            return this;
         };
     })(window.jQuery);
 }

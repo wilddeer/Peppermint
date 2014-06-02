@@ -1,6 +1,6 @@
 /*!
  * Peppermint touch slider
- * v. 1.3.1 | https://github.com/wilddeer/Peppermint
+ * v. 1.3.2 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito (included) | https://github.com/wilddeer/Event-Burrito
@@ -478,8 +478,10 @@ if (window.jQuery) {
     (function($) {
         $.fn.Peppermint = function(options) {
             this.each(function() {
-                $(this).data('Peppermint', Peppermint($(this)[0], options));
+                $(this).data('Peppermint', Peppermint(this, options));
             });
+
+            return this;
         };
     })(window.jQuery);
 }
