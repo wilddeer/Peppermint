@@ -147,15 +147,49 @@ Peppermint exposes a set of functions upon installation. These functions can be 
 
 `recalcWidth()` -- recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
 
-Example:
+###Examples
+
+JS:
 
 ```javascript
+//init Peppermint and save the API object
 var slider = Peppermint(document.getElementById('peppermint')),
+    //save links to HTML nodes
     rightArr = document.getElementById('right-arr'),
-    leftArr = document.getElementById('left-arr');
+    leftArr = document.getElementById('left-arr'),
+    getSlidesNumberButton = document.getElementById('getslidesnumber');;
 
+//click `#right-arr` to go to the next slide
 rightArr.addEventListener('click', slider.next, false);
+
+//click `#left-arr` to go to the previous slide
 leftArr.addEventListener('click', slider.prev, false);
+
+//click `#getslidesnumber` to get total number of slides
+getSlidesNumberButton.addEventListener('click', function() {
+  alert('There are '+slider.getSlidesNumber()+' slides');
+}, false);
+```
+
+JS + jQuery:
+
+```javascript
+//save jQuery link to slider's block
+var slider = $('#peppermint');
+
+//init Peppermint
+slider.Peppermint();
+
+//click `#right-arr` to go to the next slide
+$('#right-arr').click(slider.data('Peppermint').next);
+
+//click `#left-arr` to go to the previous slide
+$('#left-arr').click(slider.data('Peppermint').prev);
+
+//click `#getslidesnumber` to get total number of slides
+$('#getslidesnumber').click(function() {
+    alert('There are '+slider.data('Peppermint').getSlidesNumber()+' slides');
+});
 ```
     
 ##License
