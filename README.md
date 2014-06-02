@@ -110,7 +110,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 }
 ```
 
-###Example:
+###Examples
 
 JS:
 
