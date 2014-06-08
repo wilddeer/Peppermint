@@ -81,7 +81,7 @@ ul.peppermint-dots > li > span {
     background: #9b9890;
 }
 
-ul.peppermint-dots > li.peppermint-active > span {
+ul.peppermint-dots > li.peppermint-active-dot > span {
     margin: -6px 0 0 -6px;
     width: 10px;
     height: 10px;

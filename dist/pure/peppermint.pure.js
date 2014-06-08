@@ -1,6 +1,6 @@
 /*!
  * Peppermint touch slider
- * v. 1.3.3 | https://github.com/wilddeer/Peppermint
+ * v. 1.3.4 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito | https://github.com/wilddeer/Event-Burrito
@@ -51,6 +51,7 @@ function Peppermint(_this, options) {
         drag: o.cssPrefix + 'drag',
         slides: o.cssPrefix + 'slides',
         dots: o.cssPrefix + 'dots',
+        activeDot: o.cssPrefix + 'active-dot',
         mouseClicked: o.cssPrefix + 'mouse-clicked'
     };
 
@@ -104,10 +105,10 @@ function Peppermint(_this, options) {
         
         //change active dot
         for (var i = slider.dots.length - 1; i >= 0; i--) {
-            removeClass(slider.dots[i], classes.active);
+            removeClass(slider.dots[i], classes.activeDot);
         }
 
-        addClass(slider.dots[n], classes.active);
+        addClass(slider.dots[n], classes.activeDot);
 
         activeSlide = n;
 
