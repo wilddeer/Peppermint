@@ -1,6 +1,6 @@
 /*!
  * Peppermint touch slider
- * v. 1.3.2 | https://github.com/wilddeer/Peppermint
+ * v. 1.3.3 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito | https://github.com/wilddeer/Event-Burrito
@@ -50,7 +50,8 @@ function Peppermint(_this, options) {
         mouse: o.cssPrefix + 'mouse',
         drag: o.cssPrefix + 'drag',
         slides: o.cssPrefix + 'slides',
-        dots: o.cssPrefix + 'dots'
+        dots: o.cssPrefix + 'dots',
+        mouseClicked: o.cssPrefix + 'mouse-clicked'
     };
 
     //feature detects
@@ -339,43 +340,47 @@ function Peppermint(_this, options) {
 
             dot.innerHTML = '<span></span>';
 
-            //bind events to dots
-            addEvent(dot, 'click', (function(x, b) {
-                return function(event) {
-                    //Don't want to disable outlines completely for accessibility reasons,
-                    //so I just defocus the dot on click & set `outline: none` for `:active` in css.
-                    if (event.clientX !== 0 && event.clientY !== 0 && event.offsetX !== 0 && event.offsetY !== 0) b.blur();
+            (function(x, dotClosure) {
+                //bind events to dots
+                addEvent(dotClosure, 'click', function(event) {
                     changeActiveSlide(x);
                     o.stopSlideshowAfterInteraction && stopSlideshow();
-                };
-            })(i, dot));
+                });
 
-            //Bind the same function to Enter key except for the `blur` part -- I dont't want
-            //the focus to be lost when the user is using his keyboard to navigate.
-            addEvent(dot, 'keyup', (function(x) {
-                return function(event) {
+                //Bind the same function to Enter key except for the `blur` part -- I dont't want
+                //the focus to be lost when the user is using his keyboard to navigate.
+                addEvent(dotClosure, 'keyup', function(event) {
                     if (event.keyCode == 13) {
                         changeActiveSlide(x);
                         o.stopSlideshowAfterInteraction && stopSlideshow();
                     }
-                };
-            })(i));
+                });
 
-            //This solves tabbing problems:
-            //When an element inside a slide catches focus we switch to that slide
-            //and reset `scrollLeft` of the slider block.
-            //`SetTimeout` solves Chrome's bug.
-            //Event capturing is used to catch events on the slide level.
-            //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
-            addEvent(slide, 'focus', slide.onfocusin = (function(x) {
-                return function(e) {
+                //Don't want to disable outlines completely for accessibility reasons.
+                //Instead, add class with `outline: 0` on mouseup and remove it on blur.
+                addEvent(dotClosure, 'mouseup', function(event) {
+                    addClass(dotClosure, classes.mouseClicked);
+                });
+
+                //capturing fixes IE bug
+                addEvent(dotClosure, 'blur', function(){
+                    removeClass(dotClosure, classes.mouseClicked);
+                }, true);
+
+                //This solves tabbing problems:
+                //When an element inside a slide catches focus we switch to that slide
+                //and reset `scrollLeft` of the slider block.
+                //`SetTimeout` solves Chrome's bug.
+                //Event capturing is used to catch events on the slide level.
+                //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+                addEvent(slide, 'focus', slide.onfocusin = function(e) {
                     _this.scrollLeft = 0;
                     setTimeout(function() {
                         _this.scrollLeft = 0;
                     }, 0);
                     changeActiveSlide(x);
-                }
-            })(i), true);
+                }, true);
+            })(i, dot)
 
             slider.dots.push(dot);
         }
