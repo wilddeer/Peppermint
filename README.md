@@ -16,9 +16,9 @@ Yet another touch slider. Only better.
 
 ##Kit
 
-- **[peppermint.min.js](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.min.js)** -- minified production script
-- **[peppermint.required.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.required.css)** -- styles required for proper functioning
-- **[peppermint.suggested.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.suggested.css)** -- default styles to start with (required styles included)
+- **[peppermint.min.js](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.min.js)** – minified production script
+- **[peppermint.required.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.required.css)** – styles required for proper functioning
+- **[peppermint.suggested.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.suggested.css)** – default styles to start with (required styles included)
 
 Also available in [Bower](http://bower.io):
 
@@ -152,23 +152,23 @@ $('.peppermint').Peppermint({
 
 Peppermint exposes a set of functions upon installation. These functions can be used to controll the slider externally:
 
-`slideTo(n)` -- change active slide to `n`;
+`slideTo(n)` – change active slide to `n`;
 
-`next()` -- next slide;
+`next()` – next slide;
 
-`prev()` -- previous slide;
+`prev()` – previous slide;
 
-`start()` -- start slideshow;
+`start()` – start slideshow;
 
-`stop()` -- stop slideshow;
+`stop()` – stop slideshow;
 
-`pause()` -- pause slideshow until the next slide change;
+`pause()` – pause slideshow until the next slide change;
 
-`getCurrentPos()` -- get current slide number;
+`getCurrentPos()` – get current slide number;
 
-`getSlidesNumber()` -- get total number of slides;
+`getSlidesNumber()` – get total number of slides;
 
-`recalcWidth()` -- recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
+`recalcWidth()` – recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
 
 ####Examples
 
