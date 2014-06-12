@@ -1,0 +1,26 @@
+{
+  "name": "Peppermint",
+  "version": "1.3.4",
+  "homepage": "http://wd.dizaina.net/en/scripts/peppermint/",
+  "authors": [
+    "Oleg Korsunsky <jatruadmin@gmail.com>"
+  ],
+  "description": "Responsive touch-enabled slider",
+  "main": [
+    "dist/peppermint.min.js",
+    "dist/peppermint.suggested.css"
+  ],
+  "keywords": [
+    "touch",
+    "slider",
+    "carousel",
+    "gallery"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ]
+}
