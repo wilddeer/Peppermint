@@ -94,7 +94,7 @@ function Peppermint(_this, options) {
         else if (n>slidesNumber-1) {
             n = slidesNumber-1;
         }
-        
+
         //change active dot
         for (var i = slider.dots.length - 1; i >= 0; i--) {
             removeClass(slider.dots[i], classes.activeDot);
@@ -119,10 +119,10 @@ function Peppermint(_this, options) {
     function changePos(pos, speed) {
         var time = speed?speed+'ms':'';
 
-        slideBlock.style.webkitTransitionDuration = 
-        slideBlock.style.MozTransitionDuration = 
-        slideBlock.style.msTransitionDuration = 
-        slideBlock.style.OTransitionDuration = 
+        slideBlock.style.webkitTransitionDuration =
+        slideBlock.style.MozTransitionDuration =
+        slideBlock.style.msTransitionDuration =
+        slideBlock.style.OTransitionDuration =
         slideBlock.style.transitionDuration = time;
 
         setPos(pos);
@@ -150,13 +150,13 @@ function Peppermint(_this, options) {
             function getPoint(p1, p2) {
                 return (p2-p1)*f + p1;
             }
-            
+
             if (f >= 1) {
                 setPos(pos);
                 clearInterval(animationTimer);
                 return;
             }
-        
+
             diff = pos - startPos;
 
             y = getPoint(
@@ -171,9 +171,9 @@ function Peppermint(_this, options) {
     //sets position of the slider (in px)
     function setPos(pos) {
         slideBlock.style.webkitTransform = 'translate('+pos+'px,0) translateZ(0)';
-        slideBlock.style.msTransform = 
-        slideBlock.style.MozTransform = 
-        slideBlock.style.OTransform = 
+        slideBlock.style.msTransform =
+        slideBlock.style.MozTransform =
+        slideBlock.style.OTransform =
         slideBlock.style.transform = 'translateX('+pos+'px)';
 
         slider.left = pos;
@@ -232,7 +232,7 @@ function Peppermint(_this, options) {
         slideshowActive = false;
         slideshowTimeoutId && clearTimeout(slideshowTimeoutId);
     }
-    
+
     //this should be invoked when the width of the slider is changed
     function onWidthChange() {
         slider.width = _this.offsetWidth;
@@ -263,17 +263,17 @@ function Peppermint(_this, options) {
                 pauseSlideshow(); //pause the slideshow when touch is in progress
 
                 //if it's first slide and moving left or last slide and moving right -- resist!
-                diff.x = 
-                diff.x / 
+                diff.x =
+                diff.x /
                     (
                         (!activeSlide && diff.x > 0
                         || activeSlide == slidesNumber - 1 && diff.x < 0)
-                        ?                      
+                        ?
                         (Math.abs(diff.x)/slider.width*2 + 1)
                         :
                         1
                     );
-                
+
                 //change position of the slider appropriately
                 changePos(diff.x - slider.width*activeSlide);
             },
@@ -294,7 +294,7 @@ function Peppermint(_this, options) {
                         changeActiveSlide(activeSlide+skip, o.touchSpeed);
                     }
                     else {
-                        changeActiveSlide(activeSlide-skip, o.touchSpeed);  
+                        changeActiveSlide(activeSlide-skip, o.touchSpeed);
                     }
 
                     o.stopSlideshowAfterInteraction && stopSlideshow();
@@ -385,7 +385,7 @@ function Peppermint(_this, options) {
         addClass(_this, classes.active);
         removeClass(_this, classes.inactive);
         o.mouseDrag && addClass(_this, classes.mouse);
-        
+
         slider.width = _this.offsetWidth;
 
         //had to do this in `px` because of webkit's rounding errors :-(
