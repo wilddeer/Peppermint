@@ -3,7 +3,7 @@
   "version": "1.3.6",
   "homepage": "http://wd.dizaina.net/en/scripts/peppermint/",
   "authors": [
-    "Oleg Korsunsky <jatruadmin@gmail.com>"
+    "Oleg Korsunsky <wd@dizaina.net>"
   ],
   "description": "Responsive touch-enabled slider. Tiny, supports mouse and all sorts of touch, library agnostic.",
   "main": [
