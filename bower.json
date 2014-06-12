@@ -5,16 +5,22 @@
   "authors": [
     "Oleg Korsunsky <jatruadmin@gmail.com>"
   ],
-  "description": "Responsive touch-enabled slider",
+  "description": "Responsive touch-enabled slider. Tiny, supports mouse and all sorts of touch, library agnostic.",
   "main": [
     "dist/peppermint.min.js",
     "dist/peppermint.suggested.css"
   ],
   "keywords": [
     "touch",
+    "touch-events",
+    "pointer-events",
+    "mouse-events",
     "slider",
     "carousel",
-    "gallery"
+    "gallery",
+    "vanilla-js",
+    "framework-agnostic",
+    "library-agnostic"
   ],
   "license": "MIT",
   "ignore": [
