@@ -20,6 +20,12 @@ Yet another touch slider. Only better.
 - **[peppermint.required.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.required.css)** -- styles required for proper functioning
 - **[peppermint.suggested.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.suggested.css)** -- default styles to start with (required styles included)
 
+Also available in [Bower](http://bower.io):
+
+```
+bower install Peppermint --save
+```
+
 ##Usage
 
 HTML markup:
