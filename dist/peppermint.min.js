@@ -1,6 +1,6 @@
 /*!
  * Peppermint touch slider
- * v. 1.3.6 | https://github.com/wilddeer/Peppermint
+ * v. 1.3.7 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito (included) | https://github.com/wilddeer/Event-Burrito
