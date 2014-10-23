@@ -62,7 +62,7 @@ function Peppermint(_this, options) {
     };
 
     function mergeObjects(targetObj, sourceObject) {
-        for (key in sourceObject) {
+        for (var key in sourceObject) {
             if (sourceObject.hasOwnProperty(key)) {
                 targetObj[key] = sourceObject[key];
             }
@@ -501,16 +501,20 @@ if (window.jQuery) {
  */
 function EventBurrito(_this, options) {
 
-    var o = options || {},
-        noop = function() {};
+    var noop = function() {},
+        o = {
+            preventDefault: true,
+            clickTolerance: 0,
+            preventScroll: false,
+            mouse: true,
+            start: noop,
+            move: noop,
+            end: noop,
+            click: noop
+        };
 
-    o.clickTolerance = o.clickTolerance || 0;
-    o.preventScroll = o.preventScroll || false;
-    o.mouse = o.mouse !== undefined? o.mouse: true;
-    o.start = o.start || noop;
-    o.move = o.move || noop;
-    o.end = o.end || noop;
-    o.click = o.click || noop;
+    //merge user options into defaults
+    options && mergeObjects(o, options);
 
     var support = {
             pointerEvents: !!window.navigator.pointerEnabled,
@@ -544,7 +548,7 @@ function EventBurrito(_this, options) {
                 //1. event is not primary (other pointers during multitouch),
                 //2. left mouse button is not pressed,
                 //3. mouse drag is disabled and event is not touch
-                return !e.isPrimary || e.buttons !== 1 || (!o.mouse && e.pointerType !== 'touch' && e.pointerType !== 'pen');
+                return !e.isPrimary || (e.buttons && e.buttons !== 1) || (!o.mouse && e.pointerType !== 'touch' && e.pointerType !== 'pen');
             },
             //IE10 pointer events
             function(e) {
@@ -558,6 +562,14 @@ function EventBurrito(_this, options) {
                 return (e.buttons && e.buttons !== 1);
             }
         ];
+
+    function mergeObjects(targetObj, sourceObject) {
+        for (var key in sourceObject) {
+            if (sourceObject.hasOwnProperty(key)) {
+                targetObj[key] = sourceObject[key];
+            }
+        }
+    }
 
     function addEvent(el, event, func, bool) {
         if (!event) return;
@@ -616,7 +628,7 @@ function EventBurrito(_this, options) {
         addEvent(document, events[eventType][3], tEnd);
 
         //fixes WebKit's cursor while dragging
-        if (eventType) preventDefault(event);
+        if (o.preventDefault && eventType) preventDefault(event);
 
         //remember starting time and position
         start = {
@@ -649,7 +661,7 @@ function EventBurrito(_this, options) {
             if (isScrolling = (Math.abs(diff.x) < Math.abs(diff.y)) && !o.preventScroll) return;
         }
 
-        preventDefault(event); //Prevent scrolling
+        if (o.preventDefault) preventDefault(event); //Prevent scrolling
 
         o.move(event, start, diff, speed);
     }
@@ -661,7 +673,7 @@ function EventBurrito(_this, options) {
         //Since we don't want to disable link outlines completely for accessibility reasons,
         //we just defocus it after touch and disable the outline for `:active` links in css.
         //This way the outline will remain visible when using keyboard.
-        event.target && event.target.blur && event.target.blur();
+        !clicksAllowed && event.target && event.target.blur && event.target.blur();
 
         //detach event listeners from the document
         removeEvent(document, events[eventType][1], tMove);

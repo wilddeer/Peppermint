@@ -62,7 +62,7 @@ function Peppermint(_this, options) {
     };
 
     function mergeObjects(targetObj, sourceObject) {
-        for (key in sourceObject) {
+        for (var key in sourceObject) {
             if (sourceObject.hasOwnProperty(key)) {
                 targetObj[key] = sourceObject[key];
             }
