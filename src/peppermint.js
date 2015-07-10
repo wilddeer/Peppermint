@@ -439,8 +439,8 @@ function Peppermint(_this, options) {
 
     //expose the API
     return {
-        slideTo: function(slide) {
-            return changeActiveSlide(parseInt(slide, 10));
+        slideTo: function(slide, speed) {
+            return changeActiveSlide(parseInt(slide, 10), speed);
         },
 
         next: nextSlide,

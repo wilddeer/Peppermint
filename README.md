@@ -150,9 +150,11 @@ $('.peppermint').Peppermint({
 
 ##API
 
-Peppermint exposes a set of functions upon installation. These functions can be used to controll the slider externally:
+Peppermint exposes a set of functions upon installation. These functions can be used to control the slider externally:
 
 `slideTo(n)` – change active slide to `n`;
+
+`slideTo(n, speed)` – change active slide to `n` with transition speed in ms. Passing a speed of 0 disables the transition;
 
 `next()` – next slide;
 
