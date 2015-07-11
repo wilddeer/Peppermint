@@ -1,6 +1,6 @@
 /*!
  * Peppermint touch slider
- * v. 1.3.7 | https://github.com/wilddeer/Peppermint
+ * v. 1.4.0 | https://github.com/wilddeer/Peppermint
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * Depends on Event Burrito (included) | https://github.com/wilddeer/Event-Burrito
@@ -447,8 +447,8 @@ function Peppermint(_this, options) {
 
     //expose the API
     return {
-        slideTo: function(slide) {
-            return changeActiveSlide(parseInt(slide, 10));
+        slideTo: function(slide, speed) {
+            return changeActiveSlide(parseInt(slide, 10), speed);
         },
 
         next: nextSlide,
