@@ -93,9 +93,21 @@ module.exports = function(grunt) {
         },
 
         watch: {
+            options: {
+                atBegin: true
+            },
             files: ['src/**/*.js', 'src/**/*.css', 'package.json'],
             tasks: ['build']
         },
+
+        connect: {
+            server: {
+                options: {
+                    port: 8002,
+                    hostname: '*'
+                }
+            }
+        }
     });
 
     // build
@@ -104,8 +116,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.registerTask('build', ['uglify', 'concat']);
     grunt.registerTask('release', ['bump-only:patch', 'uglify', 'concat', 'bump-commit', 'shell:push', 'shell:pushTags']);
-    grunt.registerTask('w', ['build', 'watch']);
-    grunt.registerTask('default', 'build');
+    grunt.registerTask('default', ['connect', 'watch']);
 };
