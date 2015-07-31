@@ -257,7 +257,7 @@ function Peppermint(_this, options) {
             mouse: o.mouseDrag,
             start: function(event, start) {
                 //firefox doesn't want to apply cursor from `:active` CSS rule, have to add a class :-/
-                addClass(_this, classes.drag);
+                if (o.mouseDrag) addClass(_this, classes.drag);
             },
             move: function(event, start, diff, speed) {
                 pauseSlideshow(); //pause the slideshow when touch is in progress
@@ -301,7 +301,7 @@ function Peppermint(_this, options) {
                 }
 
                 //remove the drag class
-                removeClass(_this, classes.drag);
+                if (o.mouseDrag) removeClass(_this, classes.drag);
             }
         });
     }
