@@ -29,6 +29,7 @@ function Peppermint(_this, options) {
         dotsPrepend: false, //dots before slides
         dotsContainer: undefined,
         slidesContainer: undefined,
+        beforeSlideChange: undefined, //just before slide change
         onSlideChange: undefined, //slide change callback
         onSetup: undefined //setup callback
     };
@@ -103,6 +104,8 @@ function Peppermint(_this, options) {
         if (slider.dots[n]) {
             addClass(slider.dots[n], classes.activeDot);
         }
+
+        o.beforeSlideChange && o.beforeSlideChange(activeSlide, n);
 
         activeSlide = n;
 

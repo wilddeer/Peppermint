@@ -106,6 +106,10 @@ Peppermint can take settings object as an optional second parameter (first when 
   //element containing slides, defaults to Peppermint's root element
   slidesContainer: undefined,
 
+  //Callback function, runs just before slide change
+  //Receives previous and new slide numbers as parameters.
+  beforeSlideChange: undefined,
+
   //Callback function, runs at slide change.
   //Receives slide number as a parameter.
   onSlideChange: undefined,
