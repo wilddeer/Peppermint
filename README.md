@@ -112,7 +112,15 @@ Peppermint can take settings object as an optional second parameter (first when 
 
   //Callback function, runs at slide change.
   //Receives slide number as a parameter.
+  //Note: This event is executed as the transition animation is playing,
+  //so may cause jank if it causes layout changes, or is CPU intensive.
   onSlideChange: undefined,
+
+  //Callback function, runs at the end of the css transition.
+  //Receives slide number as a parameter.
+  //Note: This can be used for functions which cause layout changes,
+  //or changes that should not be performed when the transition animation is playing.
+  onTransitionEnd: undefined,
 
   //Callback function, runs at setup end.
   //Receives total number of slides as a parameter.

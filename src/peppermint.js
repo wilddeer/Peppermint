@@ -12,7 +12,8 @@ function Peppermint(_this, options) {
         slideBlock,
         slideshowTimeoutId,
         slideshowActive,
-        animationTimer;
+        animationTimer,
+        transitionEventName = null;
 
     //default options
     var o = {
@@ -31,6 +32,7 @@ function Peppermint(_this, options) {
         slidesContainer: undefined,
         beforeSlideChange: undefined, //just before slide change
         onSlideChange: undefined, //slide change callback
+        onTransitionEnd: undefined, //after final animation completed
         onSetup: undefined //setup callback
     };
 
@@ -114,10 +116,16 @@ function Peppermint(_this, options) {
         //reset slideshow timeout whenever active slide is changed for whatever reason
         stepSlideshow();
 
-        //API callback
+        //API callbacks
         o.onSlideChange && o.onSlideChange(n);
 
-        return n;
+        if (o.onTransitionEnd && (speed == 0 || transitionEventName === null)) {
+          // If there was no transition or is transition end is not supported,
+          // call onTransition end manually
+          o.onTransitionEnd(n);
+        }
+
+      return n;
     }
 
     //changes position of the slider (in px) with given speed (in ms)
@@ -424,6 +432,14 @@ function Peppermint(_this, options) {
             }
         }
 
+      transitionEventName = getTransitionEventName();
+
+      if (o.onTransitionEnd && transitionEventName) {
+          addEvent(slideBlock, transitionEventName, function() {
+            o.onTransitionEnd(activeSlide);
+          }, false);
+        }
+
         //watch for slider width changes
         addEvent(window, 'resize', onWidthChange);
         addEvent(window, 'orientationchange', onWidthChange);
@@ -442,6 +458,24 @@ function Peppermint(_this, options) {
         setTimeout(function() {
             o.onSetup && o.onSetup(slidesNumber);
         }, 0);
+    }
+
+    // https://gist.github.com/O-Zone/7230245
+    function getTransitionEventName() {
+      var transitions = {
+          'transition': 'transitionend',
+          'WebkitTransition': 'webkitTransitionEnd',
+          'MozTransition': 'transitionend',
+          'OTransition': 'otransitionend'
+        },
+        elem = document.createElement('div');
+
+      for(var t in transitions){
+        if(elem.style[t] !== undefined){
+          return transitions[t];
+        }
+      }
+      return null;
     }
 
     //Init
