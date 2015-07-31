@@ -100,7 +100,9 @@ function Peppermint(_this, options) {
             removeClass(slider.dots[i], classes.activeDot);
         }
 
-        addClass(slider.dots[n], classes.activeDot);
+        if (slider.dots[n]) {
+            addClass(slider.dots[n], classes.activeDot);
+        }
 
         activeSlide = n;
 
@@ -322,50 +324,57 @@ function Peppermint(_this, options) {
 
         //get slides & generate dots
         for (var i = 0, l = slideSource.children.length; i < l; i++) {
-            var slide = slideSource.children[i],
-                dot = document.createElement('li');
+            var slide = slideSource.children[i];
 
             slider.slides.push(slide);
 
-            //`tabindex` makes dots tabbable
-            dot.setAttribute('tabindex', '0');
-            dot.setAttribute('role', 'button');
+            if (o.dots) {
+                var dot = document.createElement('li');
 
-            dot.innerHTML = '<span></span>';
+                //`tabindex` makes dots tabbable
+                dot.setAttribute('tabindex', '0');
+                dot.setAttribute('role', 'button');
 
-            (function(x, dotClosure) {
-                //bind events to dots
-                addEvent(dotClosure, 'click', function(event) {
-                    changeActiveSlide(x);
-                    o.stopSlideshowAfterInteraction && stopSlideshow();
-                });
+                dot.innerHTML = '<span></span>';
 
-                //Bind the same function to Enter key except for the `blur` part -- I dont't want
-                //the focus to be lost when the user is using his keyboard to navigate.
-                addEvent(dotClosure, 'keyup', function(event) {
-                    if (event.keyCode == 13) {
+                (function(x, dotClosure) {
+                    //bind events to dots
+                    addEvent(dotClosure, 'click', function(event) {
                         changeActiveSlide(x);
                         o.stopSlideshowAfterInteraction && stopSlideshow();
-                    }
-                });
+                    });
 
-                //Don't want to disable outlines completely for accessibility reasons.
-                //Instead, add class with `outline: 0` on mouseup and remove it on blur.
-                addEvent(dotClosure, 'mouseup', function(event) {
-                    addClass(dotClosure, classes.mouseClicked);
-                });
+                    //Bind the same function to Enter key except for the `blur` part -- I dont't want
+                    //the focus to be lost when the user is using his keyboard to navigate.
+                    addEvent(dotClosure, 'keyup', function(event) {
+                        if (event.keyCode == 13) {
+                            changeActiveSlide(x);
+                            o.stopSlideshowAfterInteraction && stopSlideshow();
+                        }
+                    });
 
-                //capturing fixes IE bug
-                addEvent(dotClosure, 'blur', function(){
-                    removeClass(dotClosure, classes.mouseClicked);
-                }, true);
+                    //Don't want to disable outlines completely for accessibility reasons.
+                    //Instead, add class with `outline: 0` on mouseup and remove it on blur.
+                    addEvent(dotClosure, 'mouseup', function(event) {
+                        addClass(dotClosure, classes.mouseClicked);
+                    });
 
-                //This solves tabbing problems:
-                //When an element inside a slide catches focus we switch to that slide
-                //and reset `scrollLeft` of the slider block.
-                //`SetTimeout` solves Chrome's bug.
-                //Event capturing is used to catch events on the slide level.
-                //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+                    //capturing fixes IE bug
+                    addEvent(dotClosure, 'blur', function() {
+                        removeClass(dotClosure, classes.mouseClicked);
+                    }, true);
+                })(i, dot);
+
+                slider.dots.push(dot);
+            }
+
+            //This solves tabbing problems:
+            //When an element inside a slide catches focus we switch to that slide
+            //and reset `scrollLeft` of the slider block.
+            //`SetTimeout` solves Chrome's bug.
+            //Event capturing is used to catch events on the slide level.
+            //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+            (function(x) {
                 addEvent(slide, 'focus', slide.onfocusin = function(e) {
                     _this.scrollLeft = 0;
                     setTimeout(function() {
@@ -373,9 +382,7 @@ function Peppermint(_this, options) {
                     }, 0);
                     changeActiveSlide(x);
                 }, true);
-            })(i, dot)
-
-            slider.dots.push(dot);
+            })(i);
         }
 
         slidesNumber = slider.slides.length;
