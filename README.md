@@ -106,6 +106,11 @@ Peppermint can take settings object as an optional second parameter (first when 
   //element containing slides, defaults to Peppermint's root element
   slidesContainer: undefined,
 
+  //Callback function, called if the user swipes, but the slide change isn't triggered.
+  //Receives the touch end / mouse up event as a parameter.
+  //This can be used to handle cases where the user wanted to touch / click the slide without swiping.
+  onIncompleteSwipe: undefined,
+
   //Callback function, runs just before slide change
   //Receives previous and new slide numbers as parameters.
   beforeSlideChange: undefined,

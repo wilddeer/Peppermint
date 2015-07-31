@@ -30,6 +30,7 @@ function Peppermint(_this, options) {
         dotsPrepend: false, //dots before slides
         dotsContainer: undefined,
         slidesContainer: undefined,
+        onIncompleteSwipe: undefined, //user has dragged the slide, but it didn't trigger a slide change
         beforeSlideChange: undefined, //just before slide change
         onSlideChange: undefined, //slide change callback
         onTransitionEnd: undefined, //after final animation completed
@@ -310,7 +311,12 @@ function Peppermint(_this, options) {
                         changeActiveSlide(activeSlide-skip, o.touchSpeed);
                     }
 
+
+                    if (o.onIncompleteSwipe && skip == 0) o.onIncompleteSwipe(event); // User swiped, but not enough to change the slide
                     o.stopSlideshowAfterInteraction && stopSlideshow();
+                } else if (o.onIncompleteSwipe) {
+                    // User swiped, but vertically, not horizontally.
+                    o.onIncompleteSwipe(event);
                 }
 
                 //remove the drag class
