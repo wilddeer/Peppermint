@@ -1,4 +1,4 @@
-#Peppermint touch slider
+# Peppermint touch slider
 
 [Check out the demo](http://wd.dizaina.net/en/scripts/peppermint/)
 
@@ -14,7 +14,7 @@ Yet another touch slider. Only better.
 - API and callback functions for extensibility
 - [Doesn't break](http://wd.dizaina.net/en/internet-maintenance/js-sliders-and-the-tab-key/) when <kbd>tab</kbd>&rsquo;bing
 
-##Kit
+## Kit
 
 - **[peppermint.min.js](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.min.js)** – minified production script
 - **[peppermint.required.css](https://raw.github.com/wilddeer/Peppermint/master/dist/peppermint.required.css)** – styles required for proper functioning
@@ -26,7 +26,7 @@ Also available in [Bower](http://bower.io):
 bower install Peppermint --save
 ```
 
-##Usage
+## Usage
 
 HTML markup:
 
@@ -58,7 +58,7 @@ You are free to use any other tag instead of `figure`. When using `figure`, don'
 
 Place anything you want within the slides.
 
-##Settings
+## Settings
 
 Peppermint can take settings object as an optional second parameter (first when using jQuery). Default settings:
 
@@ -116,7 +116,7 @@ Peppermint can take settings object as an optional second parameter (first when 
 }
 ```
 
-####Examples
+### Examples
 
 JS:
 
@@ -148,7 +148,7 @@ $('.peppermint').Peppermint({
 });
 ```
 
-##API
+## API
 
 Peppermint exposes a set of functions upon installation. These functions can be used to control the slider externally:
 
@@ -172,7 +172,7 @@ Peppermint exposes a set of functions upon installation. These functions can be 
 
 `recalcWidth()` – recalculate slider's and slides' widths. Usefull when the container width is changed. Width recalculation runs automatically on window resize and device orientation change.
 
-####Examples
+### Examples
 
 JS:
 
@@ -217,10 +217,10 @@ $('#getslidesnumber').click(function() {
 });
 ```
 
-##Using Peppermint?
+## Using Peppermint?
 
 Drop me a link &rarr; [:envelope: wd@dizaina.net](mailto:wd@dizaina.net).
     
-##License
+## License
 
 [MIT license](http://opensource.org/licenses/MIT).
