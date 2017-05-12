@@ -12,7 +12,8 @@ function Peppermint(_this, options) {
         slideBlock,
         slideshowTimeoutId,
         slideshowActive,
-        animationTimer;
+        animationTimer,
+        transitionEventName = null;
 
     //default options
     var o = {
@@ -29,7 +30,10 @@ function Peppermint(_this, options) {
         dotsPrepend: false, //dots before slides
         dotsContainer: undefined,
         slidesContainer: undefined,
+        onIncompleteSwipe: undefined, //user has dragged the slide, but it didn't trigger a slide change
+        beforeSlideChange: undefined, //just before slide change
         onSlideChange: undefined, //slide change callback
+        onTransitionEnd: undefined, //after final animation completed
         onSetup: undefined //setup callback
     };
 
@@ -100,7 +104,11 @@ function Peppermint(_this, options) {
             removeClass(slider.dots[i], classes.activeDot);
         }
 
-        addClass(slider.dots[n], classes.activeDot);
+        if (slider.dots[n]) {
+            addClass(slider.dots[n], classes.activeDot);
+        }
+
+        o.beforeSlideChange && o.beforeSlideChange(activeSlide, n);
 
         activeSlide = n;
 
@@ -109,10 +117,16 @@ function Peppermint(_this, options) {
         //reset slideshow timeout whenever active slide is changed for whatever reason
         stepSlideshow();
 
-        //API callback
+        //API callbacks
         o.onSlideChange && o.onSlideChange(n);
 
-        return n;
+        if (o.onTransitionEnd && (speed == 0 || transitionEventName === null)) {
+          // If there was no transition or is transition end is not supported,
+          // call onTransition end manually
+          o.onTransitionEnd(n);
+        }
+
+      return n;
     }
 
     //changes position of the slider (in px) with given speed (in ms)
@@ -257,7 +271,7 @@ function Peppermint(_this, options) {
             mouse: o.mouseDrag,
             start: function(event, start) {
                 //firefox doesn't want to apply cursor from `:active` CSS rule, have to add a class :-/
-                addClass(_this, classes.drag);
+                if (o.mouseDrag) addClass(_this, classes.drag);
             },
             move: function(event, start, diff, speed) {
                 pauseSlideshow(); //pause the slideshow when touch is in progress
@@ -297,11 +311,16 @@ function Peppermint(_this, options) {
                         changeActiveSlide(activeSlide-skip, o.touchSpeed);
                     }
 
+
+                    if (o.onIncompleteSwipe && skip == 0) o.onIncompleteSwipe(event); // User swiped, but not enough to change the slide
                     o.stopSlideshowAfterInteraction && stopSlideshow();
+                } else if (o.onIncompleteSwipe) {
+                    // User swiped, but vertically, not horizontally.
+                    o.onIncompleteSwipe(event);
                 }
 
                 //remove the drag class
-                removeClass(_this, classes.drag);
+                if (o.mouseDrag) removeClass(_this, classes.drag);
             }
         });
     }
@@ -322,50 +341,57 @@ function Peppermint(_this, options) {
 
         //get slides & generate dots
         for (var i = 0, l = slideSource.children.length; i < l; i++) {
-            var slide = slideSource.children[i],
-                dot = document.createElement('li');
+            var slide = slideSource.children[i];
 
             slider.slides.push(slide);
 
-            //`tabindex` makes dots tabbable
-            dot.setAttribute('tabindex', '0');
-            dot.setAttribute('role', 'button');
+            if (o.dots) {
+                var dot = document.createElement('li');
 
-            dot.innerHTML = '<span></span>';
+                //`tabindex` makes dots tabbable
+                dot.setAttribute('tabindex', '0');
+                dot.setAttribute('role', 'button');
 
-            (function(x, dotClosure) {
-                //bind events to dots
-                addEvent(dotClosure, 'click', function(event) {
-                    changeActiveSlide(x);
-                    o.stopSlideshowAfterInteraction && stopSlideshow();
-                });
+                dot.innerHTML = '<span></span>';
 
-                //Bind the same function to Enter key except for the `blur` part -- I dont't want
-                //the focus to be lost when the user is using his keyboard to navigate.
-                addEvent(dotClosure, 'keyup', function(event) {
-                    if (event.keyCode == 13) {
+                (function(x, dotClosure) {
+                    //bind events to dots
+                    addEvent(dotClosure, 'click', function(event) {
                         changeActiveSlide(x);
                         o.stopSlideshowAfterInteraction && stopSlideshow();
-                    }
-                });
+                    });
 
-                //Don't want to disable outlines completely for accessibility reasons.
-                //Instead, add class with `outline: 0` on mouseup and remove it on blur.
-                addEvent(dotClosure, 'mouseup', function(event) {
-                    addClass(dotClosure, classes.mouseClicked);
-                });
+                    //Bind the same function to Enter key except for the `blur` part -- I dont't want
+                    //the focus to be lost when the user is using his keyboard to navigate.
+                    addEvent(dotClosure, 'keyup', function(event) {
+                        if (event.keyCode == 13) {
+                            changeActiveSlide(x);
+                            o.stopSlideshowAfterInteraction && stopSlideshow();
+                        }
+                    });
 
-                //capturing fixes IE bug
-                addEvent(dotClosure, 'blur', function(){
-                    removeClass(dotClosure, classes.mouseClicked);
-                }, true);
+                    //Don't want to disable outlines completely for accessibility reasons.
+                    //Instead, add class with `outline: 0` on mouseup and remove it on blur.
+                    addEvent(dotClosure, 'mouseup', function(event) {
+                        addClass(dotClosure, classes.mouseClicked);
+                    });
 
-                //This solves tabbing problems:
-                //When an element inside a slide catches focus we switch to that slide
-                //and reset `scrollLeft` of the slider block.
-                //`SetTimeout` solves Chrome's bug.
-                //Event capturing is used to catch events on the slide level.
-                //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+                    //capturing fixes IE bug
+                    addEvent(dotClosure, 'blur', function() {
+                        removeClass(dotClosure, classes.mouseClicked);
+                    }, true);
+                })(i, dot);
+
+                slider.dots.push(dot);
+            }
+
+            //This solves tabbing problems:
+            //When an element inside a slide catches focus we switch to that slide
+            //and reset `scrollLeft` of the slider block.
+            //`SetTimeout` solves Chrome's bug.
+            //Event capturing is used to catch events on the slide level.
+            //Since older IEs don't have capturing, `onfocusin` is used as a fallback.
+            (function(x) {
                 addEvent(slide, 'focus', slide.onfocusin = function(e) {
                     _this.scrollLeft = 0;
                     setTimeout(function() {
@@ -373,9 +399,7 @@ function Peppermint(_this, options) {
                     }, 0);
                     changeActiveSlide(x);
                 }, true);
-            })(i, dot)
-
-            slider.dots.push(dot);
+            })(i);
         }
 
         slidesNumber = slider.slides.length;
@@ -414,6 +438,14 @@ function Peppermint(_this, options) {
             }
         }
 
+      transitionEventName = getTransitionEventName();
+
+      if (o.onTransitionEnd && transitionEventName) {
+          addEvent(slideBlock, transitionEventName, function() {
+            o.onTransitionEnd(activeSlide);
+          }, false);
+        }
+
         //watch for slider width changes
         addEvent(window, 'resize', onWidthChange);
         addEvent(window, 'orientationchange', onWidthChange);
@@ -432,6 +464,24 @@ function Peppermint(_this, options) {
         setTimeout(function() {
             o.onSetup && o.onSetup(slidesNumber);
         }, 0);
+    }
+
+    // https://gist.github.com/O-Zone/7230245
+    function getTransitionEventName() {
+      var transitions = {
+          'transition': 'transitionend',
+          'WebkitTransition': 'webkitTransitionEnd',
+          'MozTransition': 'transitionend',
+          'OTransition': 'otransitionend'
+        },
+        elem = document.createElement('div');
+
+      for(var t in transitions){
+        if(elem.style[t] !== undefined){
+          return transitions[t];
+        }
+      }
+      return null;
     }
 
     //Init
