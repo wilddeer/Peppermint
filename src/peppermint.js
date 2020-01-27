@@ -106,7 +106,7 @@ function Peppermint(_this, options) {
 
         activeSlide = n;
 
-        changePos(-n*slider.width, (speed===undefined?o.speed:speed));
+        changePos(-n*slideWidth, (speed===undefined?o.speed:speed));
 
         //reset slideshow timeout whenever active slide is changed for whatever reason
         stepSlideshow();
@@ -240,11 +240,11 @@ function Peppermint(_this, options) {
         slider.width = _this.offsetWidth;
 
         //have to do this in `px` because of webkit's rounding errors :-(
-        slideBlock.style.width = slider.width*slidesNumber+'px';
-        for (var i = 0; i < slidesNumber; i++) {
-            slider.slides[i].style.width = slider.width+'px';
+        slideBlock.style.width = slideWidth*slider.slides.length+'px';
+        for (var i = 0; i < slider.slides.length; i++) {
+            slider.slides[i].style.width = slideWidth+'px';
         }
-        changePos(-activeSlide*slider.width);
+        changePos(-activeSlide*slideWidth);
     }
 
     function addEvent(el, event, func, bool) {
@@ -391,7 +391,7 @@ function Peppermint(_this, options) {
         slideWidth = slider.width/slidesVisible*switchSlides;
 
         //had to do this in `px` because of webkit's rounding errors :-(
-        slideBlock.style.width = slider.width*slidesNumber+'px';
+        slideBlock.style.width = slideWidth*slider.slides.length+'px';
         for (var i = 0; i < slider.slides.length; i++) {
             slider.slides[i].style.width = slideWidth+'px';
             slideBlock.appendChild(slider.slides[i]);
