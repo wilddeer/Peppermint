@@ -22,6 +22,8 @@ function Peppermint(_this, options) {
         slideshowInterval: 4000,
         stopSlideshowAfterInteraction: false, //stop slideshow after user interaction
         startSlide: 0, //first slide to show
+        slidesVisible: 1, //count slides visible
+        swichSlides: false, // how much slides switch
         mouseDrag: true, //enable mouse drag
         disableIfOneSlide: true,
         cssPrefix: 'peppermint-',
