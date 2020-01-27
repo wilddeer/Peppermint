@@ -23,7 +23,7 @@ function Peppermint(_this, options) {
         stopSlideshowAfterInteraction: false, //stop slideshow after user interaction
         startSlide: 0, //first slide to show
         slidesVisible: 1, //count slides visible
-        swichSlides: false, // how much slides switch
+        switchSlides: false, // how much slides switch; if false, then value equally slidesVisible
         mouseDrag: true, //enable mouse drag
         disableIfOneSlide: true,
         cssPrefix: 'peppermint-',
@@ -379,10 +379,8 @@ function Peppermint(_this, options) {
 
             slider.dots.push(dot);
         }
-
-        slidesNumber = slider.slides.length;
-
-        slideWidth = 100/slidesNumber;
+        if (!switchSlides || switchSlides > slidesVisible) {switchSlides=slidesVisible}
+        slidesNumber = 1+Math.ceil((slider.slides.length-slidesVisible)/switchSlides);
 
         addClass(_this, classes.active);
         removeClass(_this, classes.inactive);
@@ -390,10 +388,12 @@ function Peppermint(_this, options) {
 
         slider.width = _this.offsetWidth;
 
+        slideWidth = slider.width/slidesVisible*switchSlides;
+
         //had to do this in `px` because of webkit's rounding errors :-(
         slideBlock.style.width = slider.width*slidesNumber+'px';
-        for (var i = 0; i < slidesNumber; i++) {
-            slider.slides[i].style.width = slider.width+'px';
+        for (var i = 0; i < slider.slides.length; i++) {
+            slider.slides[i].style.width = slideWidth+'px';
             slideBlock.appendChild(slider.slides[i]);
         }
 
