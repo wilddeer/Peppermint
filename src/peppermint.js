@@ -24,6 +24,7 @@ function Peppermint(_this, options) {
         startSlide: 0, //first slide to show
         slidesVisible: 1, //count slides visible
         switchSlides: false, // how much slides switch; if false, then value equally slidesVisible
+        offsetBetweenSlides: 20, // offset between slides in px
         mouseDrag: true, //enable mouse drag
         disableIfOneSlide: true,
         cssPrefix: 'peppermint-',
@@ -342,6 +343,10 @@ function Peppermint(_this, options) {
         //had to do this in `px` because of webkit's rounding errors :-(
         slideBlock.style.width = slideWidth*slider.slides.length+'px';
         for (var i = 0; i < slider.slides.length; i++) {
+            if (o.slidesVisible > 1) {
+                slider.slides[i].style.paddingLeft = o.offsetBetweenSlides/2+'px';
+                slider.slides[i].style.paddingRight = o.offsetBetweenSlides/2+'px';
+            }
             slider.slides[i].style.width = slideWidth+'px';
             slideBlock.appendChild(slider.slides[i]);
         }
