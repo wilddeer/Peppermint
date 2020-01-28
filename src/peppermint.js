@@ -278,18 +278,18 @@ function Peppermint(_this, options) {
                     );
 
                 //change position of the slider appropriately
-                changePos(diff.x - slider.width*activeSlide);
+                changePos(diff.x - slideWidth*o.switchSlides*activeSlide);
             },
             end: function(event, start, diff, speed) {
                 if (diff.x) {
-                    var ratio = Math.abs(diff.x)/slider.width,
+                    var ratio = Math.abs(diff.x)/(slideWidth*o.switchSlides),
                         //How many slides to skip. Remainder > 0.25 counts for one slide.
                         skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
                         //Super-duper formula to detect a flick.
                         //First, it's got to be fast enough.
                         //Second, if `skip==0`, 20px move is enough to switch to the next slide.
                         //If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
-                        flick = diff.time < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
+                        flick = diff.time < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*(slideWidth*o.switchSlides) > (skip?-(slideWidth*o.switchSlides)/9:20);
 
                     skip += (flick?1:0);
 
