@@ -107,7 +107,13 @@ function Peppermint(_this, options) {
 
         activeSlide = n;
 
-        changePos(-n*slideWidth*o.switchSlides, (speed===undefined?o.speed:speed));
+        changePos(
+            (o.slidesVisible+n*o.switchSlides)>slider.slides.length
+                ?
+                (-slider.slides.length*slideWidth)+o.slidesVisible*slideWidth
+                :
+                -n*slideWidth*o.switchSlides,
+            (speed===undefined?o.speed:speed));
 
         //reset slideshow timeout whenever active slide is changed for whatever reason
         stepSlideshow();

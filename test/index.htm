@@ -313,73 +313,73 @@
             addEvent(document.getElementById('js-right'), 'click', slider.next, false);
             addEvent(document.getElementById('js-left'), 'click', slider.prev, false);
 
-            var jqtestSlider = $('.jquery-test');
+            // var jqtestSlider = $('.jquery-test');
 
-            jqtestSlider.Peppermint({
-                dots: true,
-                slideshow: true,
-                onSlideChange: function(n) {
-                    $('.js-n').text(n);
-                    $('.js-pos').text(jqtestSlider.data('Peppermint').getCurrentPos());
-                    $('.js-length').text(jqtestSlider.data('Peppermint').getSlidesNumber());
-                }
-            });
+            // jqtestSlider.Peppermint({
+            //     dots: true,
+            //     slideshow: true,
+            //     onSlideChange: function(n) {
+            //         $('.js-n').text(n);
+            //         $('.js-pos').text(jqtestSlider.data('Peppermint').getCurrentPos());
+            //         $('.js-length').text(jqtestSlider.data('Peppermint').getSlidesNumber());
+            //     }
+            // });
 
-            $('.js-left').on('click', jqtestSlider.data('Peppermint').prev);
+            // $('.js-left').on('click', jqtestSlider.data('Peppermint').prev);
 
-            $('.js-right').on('click', jqtestSlider.data('Peppermint').next);
+            // $('.js-right').on('click', jqtestSlider.data('Peppermint').next);
 
-            $('.js-start').on('click', jqtestSlider.data('Peppermint').start);
+            // $('.js-start').on('click', jqtestSlider.data('Peppermint').start);
 
-            $('.js-stop').on('click', jqtestSlider.data('Peppermint').stop);
+            // $('.js-stop').on('click', jqtestSlider.data('Peppermint').stop);
 
-            $('.js-go').on('click', function() {
-                jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
-            });
+            // $('.js-go').on('click', function() {
+            //     jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
+            // });
 
-            $('.js-goto').on('keyup', function(event) {
-                if (event.keyCode == 13){
-                    jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
-                }
-            });
+            // $('.js-goto').on('keyup', function(event) {
+            //     if (event.keyCode == 13){
+            //         jqtestSlider.data('Peppermint').slideTo($('.js-goto').val());
+            //     }
+            // });
 
-            $('.nodots-test').Peppermint({
-                slideshow: true,
-                mouseDrag: false
-            });
+            // $('.nodots-test').Peppermint({
+            //     slideshow: true,
+            //     mouseDrag: false
+            // });
 
-            $('.singleslide-test').Peppermint({
-                slideshow: true,
-                dots: true
-            });
+            // $('.singleslide-test').Peppermint({
+            //     slideshow: true,
+            //     dots: true
+            // });
 
-            $('.singleslide-enabled-test').Peppermint({
-                slideshow: true,
-                dots: true,
-                disableIfOneSlide: false
-            });
+            // $('.singleslide-enabled-test').Peppermint({
+            //     slideshow: true,
+            //     dots: true,
+            //     disableIfOneSlide: false
+            // });
 
-            $('.dotsfirst-test').Peppermint({
-                dots: true,
-                dotsPrepend: true,
-                startSlide: 2
-            });
+            // $('.dotsfirst-test').Peppermint({
+            //     dots: true,
+            //     dotsPrepend: true,
+            //     startSlide: 2
+            // });
 
-            $('.dotstarget-prepend-test').Peppermint({
-                dots: true,
-                dotsContainer: $('.dotstarget')[0],
-                dotsPrepend: true
-            });
+            // $('.dotstarget-prepend-test').Peppermint({
+            //     dots: true,
+            //     dotsContainer: $('.dotstarget')[0],
+            //     dotsPrepend: true
+            // });
 
-            $('.dotstarget-test').Peppermint({
-                dots: true,
-                dotsContainer: $('.dotstarget')[0]
-            });
+            // $('.dotstarget-test').Peppermint({
+            //     dots: true,
+            //     dotsContainer: $('.dotstarget')[0]
+            // });
 
-            $('.slides-container-inner-test').Peppermint({
-                dots: true,
-                slidesContainer: $('.slides-container-inner-test .slides-container')[0]
-            });
+            // $('.slides-container-inner-test').Peppermint({
+            //     dots: true,
+            //     slidesContainer: $('.slides-container-inner-test .slides-container')[0]
+            // });
 
 
         })();
