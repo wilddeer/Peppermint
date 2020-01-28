@@ -284,7 +284,11 @@ function Peppermint(_this, options) {
                     );
 
                 //change position of the slider appropriately
-                changePos(diff.x - slideWidth*o.switchSlides*activeSlide);
+                if (slider.slides.length*slideWidth-o.slidesVisible*slideWidth < slideWidth*o.switchSlides*activeSlide) {
+                    changePos(diff.x - (slider.slides.length*slideWidth-o.slidesVisible*slideWidth));
+                } else {
+                    changePos(diff.x - slideWidth*o.switchSlides*activeSlide);
+                }
             },
             end: function(event, start, diff, speed) {
                 if (diff.x) {

@@ -32,6 +32,7 @@ function Peppermint(_this, options) {
         startSlide: 0, //first slide to show
         slidesVisible: 1, //count slides visible
         switchSlides: false, // how much slides switch; if false, then value equally slidesVisible
+        offsetBetweenSlides: 20, // offset between slides in px
         mouseDrag: true, //enable mouse drag
         disableIfOneSlide: true,
         cssPrefix: 'peppermint-',
@@ -114,7 +115,13 @@ function Peppermint(_this, options) {
 
         activeSlide = n;
 
-        changePos(-n*slideWidth*o.switchSlides, (speed===undefined?o.speed:speed));
+        changePos(
+            (o.slidesVisible+n*o.switchSlides)>slider.slides.length
+                ?
+                (-slider.slides.length*slideWidth)+o.slidesVisible*slideWidth
+                :
+                -n*slideWidth*o.switchSlides,
+            (speed===undefined?o.speed:speed));
 
         //reset slideshow timeout whenever active slide is changed for whatever reason
         stepSlideshow();
@@ -285,18 +292,22 @@ function Peppermint(_this, options) {
                     );
 
                 //change position of the slider appropriately
-                changePos(diff.x - slider.width*activeSlide);
+                if (slider.slides.length*slideWidth-o.slidesVisible*slideWidth < slideWidth*o.switchSlides*activeSlide) {
+                    changePos(diff.x - (slider.slides.length*slideWidth-o.slidesVisible*slideWidth));
+                } else {
+                    changePos(diff.x - slideWidth*o.switchSlides*activeSlide);
+                }
             },
             end: function(event, start, diff, speed) {
                 if (diff.x) {
-                    var ratio = Math.abs(diff.x)/slider.width,
+                    var ratio = Math.abs(diff.x)/(slideWidth*o.switchSlides),
                         //How many slides to skip. Remainder > 0.25 counts for one slide.
                         skip = Math.floor(ratio) + (ratio - Math.floor(ratio) > 0.25?1:0),
                         //Super-duper formula to detect a flick.
                         //First, it's got to be fast enough.
                         //Second, if `skip==0`, 20px move is enough to switch to the next slide.
                         //If `skip>0`, it's enough to slide to the middle of the slide minus `slider.width/9` to skip even further.
-                        flick = diff.time < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*slider.width > (skip?-slider.width/9:20);
+                        flick = diff.time < flickThreshold+flickThreshold*skip/1.8 && Math.abs(diff.x) - skip*(slideWidth*o.switchSlides) > (skip?-(slideWidth*o.switchSlides)/9:20);
 
                     skip += (flick?1:0);
 
@@ -350,6 +361,10 @@ function Peppermint(_this, options) {
         //had to do this in `px` because of webkit's rounding errors :-(
         slideBlock.style.width = slideWidth*slider.slides.length+'px';
         for (var i = 0; i < slider.slides.length; i++) {
+            if (o.slidesVisible > 1) {
+                slider.slides[i].style.paddingLeft = o.offsetBetweenSlides/2+'px';
+                slider.slides[i].style.paddingRight = o.offsetBetweenSlides/2+'px';
+            }
             slider.slides[i].style.width = slideWidth+'px';
             slideBlock.appendChild(slider.slides[i]);
         }
