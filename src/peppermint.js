@@ -245,7 +245,7 @@ function Peppermint(_this, options) {
     //this should be invoked when the width of the slider is changed
     function onWidthChange() {
         slider.width = _this.offsetWidth;
-
+        slideWidth = slider.width/o.slidesVisible;
         //have to do this in `px` because of webkit's rounding errors :-(
         slideBlock.style.width = slideWidth*slider.slides.length+'px';
         for (var i = 0; i < slider.slides.length; i++) {
