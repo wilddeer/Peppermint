@@ -1,3 +1,11 @@
+----
+# ⚠ Unmaintained!
+
+It still works and all, but the code is old and crappy, and I have no plans for a revamp.
+
+----
+<br><br>
+
 # Peppermint touch slider
 
 [Check out the demo](http://wd.dizaina.net/en/scripts/peppermint/)
