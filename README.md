@@ -8,6 +8,8 @@ It still works and all, but the code is old and crappy, and I have no plans for 
 
 # Peppermint touch slider
 
+[![CDNJS](https://img.shields.io/cdnjs/v/peppermint.svg)](https://cdnjs.com/libraries/peppermint)
+
 [Check out the demo](http://wd.dizaina.net/en/scripts/peppermint/)
 
 Yet another touch slider. Only better.
